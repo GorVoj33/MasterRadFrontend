@@ -1,0 +1,116 @@
+/* .product-detail{
+  display: inline-block;
+  float: left;
+  width: 100%;
+  padding: 45px 0;
+}
+
+.product-detail h3{
+  font-size: 24px;
+  padding: 13px;
+}
+
+.product-detail-left{
+  float: left;
+  width: 40%;
+}
+
+.product-detail-right{
+  float: right;
+  width: 55%;
+}
+
+.product-detail-right h3{
+  font-size: 22px;
+  line-height: 24px;
+  padding-top: 0;
+}
+.product-detail-right h3{
+  font-size: 14px;
+  color:gray;
+}
+.product-detail-right h5 {
+ font-size: 18px;
+ margin-bottom: 20px;
+ color: gray;
+}
+.product-detail-right h5 b {
+  color: #000;
+}
+.product-detail-right .addtocart{
+  border: 1px solid;
+  color: #ffa800;
+  font-size: 18px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  display: inline-block;
+}
+.product-detail-right .writecomment{
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  margin-left: 20px;
+  display: inline-block;
+} */
+.container {
+  margin-top: 50px;
+}
+.kategorija{
+  background: green;
+  width: 70px;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+
+}
+.col-md-7 h2 {
+  color: #555;
+}
+.price {
+  color: #FE980F;
+  font-size: 26px;
+  font-weight: bold;
+  padding-top: 20px;
+}
+input {
+  border: 1px solid #ccc;
+  font-weight: bold;
+  height: 33px;
+  text-align: center;
+  width: 30px;
+}
+.cart {
+  background: #FE980F;
+  color: #FFFFFF;
+  font-size: 25px;
+  margin-left: 20px;
+}
+.carousel-inner{
+  border-radius: 10px;
+}
+.material-icons {
+  color: green;
+  font-size: 32px;
+}
+.clear {
+  color: red;
+}
+.kolicina {
+  font-weight: 800;
+  font-size: 38px;
+}
+.normal-text {
+  font-size: 20px;
+}
+.icon {
+  margin-right: 10px;
+  margin-left: 10px;
+}
+.green {
+  color: green;
+}

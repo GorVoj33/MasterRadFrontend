@@ -1,0 +1,20 @@
+.status {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: 15px;
+  font-size: 20px;
+  font-weight: 600;
+}
+.poruka {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  margin-left: 15px;
+  font-size: 17px;
+  color: red;
+}
+.btn {
+  margin-left: 20px;
+  width: 60%;
+  background-color: red;
+  color: white;
+}

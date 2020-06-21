@@ -1,0 +1,29 @@
+
+.navbar-toggler-icon{
+  color: black;
+}
+.navbar{
+  border-bottom: 4px solid rgba(63, 58, 58, 0.212);
+
+}
+
+.nav-item {
+  font-size: 18px;
+  text-align: center;
+}
+.dropdown-item{
+  font-size: 14px;
+
+}
+
+ul > li {
+  padding-top: 10px;
+  padding-right: 15px;
+}
+.nav-link{
+  padding-top: 0;
+}
+.nav-item .nav-link{
+  /* color: white; */
+  font-weight: lighter;
+}

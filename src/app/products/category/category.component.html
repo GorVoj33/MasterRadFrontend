@@ -1,0 +1,19 @@
+<mat-drawer-container>
+  <mat-drawer-content>
+    Popunite sva polja.
+    <form #formData="ngForm" (ngSubmit)="dodajNovuKategoriju(formData)">
+      <div class='form-group col-md-6'>
+        <label for="inputNaziv">Naziv kategorije</label>
+        <input type="text" class="form-control" id="naziv" placeholder="Unesite naziv kategorije" name='nazivKategorije' ngModel  #nazivKategorije='ngModel' required>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="inputSlika" style="padding-right: 10px;">Odaberite sliku kategorije:</label>
+        <input type="file" id="choose-file" class='input-frm' (change)="onFileChangedForCategory($event)">
+      </div>
+      <button type="submit" class="btn btn-primary">Sačuvaj i objavi kategoriju</button>
+    </form>
+
+  </mat-drawer-content>
+
+
+</mat-drawer-container>

@@ -1,0 +1,32 @@
+<app-navbar></app-navbar>
+<div class="container">
+  <div class='row filter'>
+    <div class="col-md-6 col-sm-12 search">Pretraga: <input type="text" class='search-input'> </div>
+    <div class="col-md-2 col-sm-4 text-right">Sortiraj:</div>
+    <div class="col-md-2 col-sm-4 sort-naziv text-center">Naziv</div>
+    <div class="col-md-2 col-sm-4 sort-cena text-center">Cena</div>
+  </div>
+  <div class="row">
+
+    <!-- <div class=""> -->
+      <div class=" col-md-3 col-sm-4 col-xs-6 product-grid" *ngFor='let p of products' (click)='prikaziDetalje(p.id)'>
+          <div class="product-image">
+                  <img [src]="formImg(p.slika.picByte)">
+                  <!-- <img [src]="formImg(p.slika.picByte)"> -->
+              <span class="product-trend-label">{{p.kategorija.naziv}}</span>
+              <ul class="social">
+                  <li><button type="button" class="button-dodaj"> Dodaj u korpu</button> </li>
+              </ul>
+          </div>
+          <div class="product-content">
+              <h3 class="title"><a href="#">{{p.naziv}}</a></h3>
+              <div class="price">Cena: {{p.cena}} / {{p.kolicina}}</div>
+          </div>
+
+          <!-- <hr> -->
+
+      </div>
+
+    </div>
+  </div>
+<!-- </div> -->

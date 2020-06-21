@@ -1,0 +1,15 @@
+.narudzbina {
+  margin-top: 40px;
+}
+.info {
+  margin: 10px;
+  border:  1px solid black;
+}
+.accepted {
+  color: green;
+  font-weight: 700;
+}
+.denied {
+  color: red;
+  font-weight: 700;
+}

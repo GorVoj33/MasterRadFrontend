@@ -1,0 +1,15 @@
+.primary {
+  border: 1px solid black;
+  margin-right: 7px;
+  margin-bottom: 5px;
+}
+.add {
+  color: white;
+  background: red;
+}
+.products-by-prodavac {
+
+  border: 1px dashed black;
+  margin-top: 10px;
+  padding: 3px;
+}

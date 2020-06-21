@@ -1,0 +1,17 @@
+.opis{
+  font-size: 23px;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+.divider {
+  margin-top: 10px;
+  color: green;
+}
+.btn {
+  border: 1px solid black;
+  font-size: 26px;
+  background-color: antiquewhite;
+}
+.meni {
+  padding-top: 20px;
+  font-size: 23px;
+}

@@ -1,0 +1,138 @@
+<app-navbar></app-navbar>
+<div class="container">
+  <div class='row' *ngIf='dataLoading' >
+    <mat-spinner mode="indeterminate" style="left: 35%; top: 20%;"></mat-spinner>
+  </div>
+  <!-- Vasa korpa -> {{korpa?.brojStavki}} stavki -->
+  <div class='row' *ngIf='!dataLoading'>
+    <!-- <div class='col-md-8'>
+      Podaci o korpi
+
+    </div> -->
+    <div class='col-md-8 products'>
+      <div class="products-by-prodavac" id='prodavac-{{p.prodavac.id}}' *ngFor='let p of korpa?.stavke' scope="col">
+        <div class='row'>
+          <div class="col-md-1">
+            <!-- <input type="checkbox" /> -->
+
+          </div>
+          <div class='col-md-5 col-sm-6 prodavac-name'>Prodavac: {{p.prodavac.ime}} {{p.prodavac.prezime}}
+            <!-- ({{p.prodavac.gazdinstvo}}) -->
+          </div>
+          <div class='col-md-6 col-sm-5'><b>Dostava: </b>Direktna:
+            <span class="material-icons done" *ngIf='p.prodavac.direktnaIsporuka'>
+              done
+            </span>
+            <span class="material-icons remove" *ngIf='!p.prodavac.direktnaIsporuka'>
+              remove_circle
+            </span>
+
+            Kurirska:
+            <span class="material-icons done"  *ngIf='p.prodavac.kurirskaIsporuka'>
+              done
+            </span>
+
+            <span class="material-icons remove" *ngIf='!p.prodavac.kurirskaIsporuka'>
+              remove_circle
+            </span>
+          </div>
+
+
+          <!-- <div class='col-md-4 col-sm-6'></div> -->
+        </div>
+        <hr>
+          <div class='row'>
+            <!-- <div class='col-md-1'></div> -->
+            <div class='col-md-3 col-sm-6'>Slika</div>
+            <div class='col-md-2 col-sm-6'>Naziv (Cena)</div>
+            <div class='col-md-2 col-sm-6'>Dostava</div>
+            <div class='col-md-2 col-sm-6'>Kolicina</div>
+            <div class='col-md-2 col-sm-6'>Ukupno</div>
+          </div>
+        <hr>
+
+        <div class='row' *ngFor='let a of p.artikli'>
+          <!-- <div class='col-md-1'></div> -->
+          <div class='col-md-3'><img [src]="formImg(a.artikal.slika.picByte)" height="90px" width="90px"></div>
+          <div class='col-md-2'>{{a.artikal.naziv}}({{a.artikal.cena}} din.) </div>
+          <div class='col-md-2'>
+
+           <p *ngIf='a.artikal.moguceSlanjeKurirom && p.prodavac.direktnaIsporuka && p.prodavac.kurirskaIsporuka'>Direktno, Kurirski</p>
+           <p *ngIf='!a.artikal.moguceSlanjeKurirom && p.prodavac.direktnaIsporuka'>Samo direktno</p>
+           <p *ngIf='!a.artikal.moguceSlanjeKurirom && p.prodavac.kurirskaIsporuka && !p.prodavac.direktnaIsporuka'>Samo Kurirski</p>
+          </div>
+          <div class='col-md-2' style="font-size: 22px;">
+
+            <span class="material-icons">
+            add
+            </span>
+            {{a.kolicina}} kom.
+            <span class="material-icons">
+              remove
+            </span>
+            </div>
+            <div class='col-md-2'>
+              {{a.vrednost}} din.
+              <span id='delete-btn' class="material-icons delete-item" (click)='deleteItem(p,a, a.stavkaId)'>
+                delete
+              </span>
+            </div>
+
+
+
+          <hr>
+        </div>
+        <hr>
+        <div clas='row izbor-dostave'>
+
+          <p class='info' *ngIf='!p.moguceKurirski && p.prodavac.kurirskaIsporuka'>Napomena:<br> Neki od artikala nije moguce slati kurirski, tako da isporuka mora biti direktna. </p>
+          <p class='info' *ngIf='p.moguceKurirski && !p.prodavac.kurirskaIsporuka'>Napomena:<br> Prodavac ne podrzava kurirsku isporuku, iako svi artikli mogu da se salju kurirom. </p>
+          Izaberite dostavu koju zelite:<br>
+          <button type='button' id='{{p.prodavac.id}}-kurirska' class="select-btn" *ngIf='p.moguceKurirski && p.prodavac.kurirskaIsporuka' (click)='selectKurirskaDostava(p)'>Zelim kurirsku dostavu ovih artikala, placanje pouzecem</button>
+          <button type='button' id='{{p.prodavac.id}}-direktna' class="select-btn" *ngIf='p.prodavac.direktnaIsporuka' (click)='selectDirektnaDostava(p)'>Zelim direktnu dostavu ovih artikala, u dogovoru sa prodavcem</button>
+          <!-- <div class="form-check form-check-inline" *ngIf='p.moguceKurirski && p.prodavac.kurirskaIsporuka' >
+            <input class="form-check-input" type="radio" name="kurir-radio" id="kurir-radio" value="kurirski" [(ngModel)]='p.izabranaDostava' (change)='onSelectionChange(p.izabranaDostava)'>
+            <label class="form-check-label" for="kurir-radio">
+              Kurirska
+            </label>
+
+          </div>
+          <div class="form-check form-check-inline" *ngIf='p.prodavac.direktnaIsporuka' >
+            <input class="form-check-input" type="radio" name="direktno-radio" id="direktno-radio" value="direktno" [(ngModel)]='p.izabranaDostava' (change)='onSelectionChange(p.izabranaDostava)'>
+            <label class="form-check-label" for="direktno-radio">
+              Direktna
+            </label>
+
+          </div> -->
+
+        </div>
+        <hr class='divider'>
+      </div>
+      <!-- <hr class='divider'> -->
+    </div>
+    <div class='col-md-3 cart-info'>
+      <div class="cart-summary">
+        <div class='header-cart'>
+          Potencionalna vrednost korpe: {{korpa?.ukupnaVrednost}} din.
+        </div>
+        <div class="elementary-cost">
+          Broj artikala: {{ukupnoArtikala}}
+        </div>
+        <!-- <div class="elementary-cost">
+          Troskovi dostave:
+        </div> -->
+        <hr>
+        <div class="total-cost">
+          Ukupno: {{ukupnaVrednostArtikala}}
+        </div>
+        <div>
+          <button class="btn-order btn btn-default cart" (click)='order()'type="button">Naruci ({{ukupnoArtikala}})</button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

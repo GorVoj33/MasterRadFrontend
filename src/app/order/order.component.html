@@ -1,0 +1,61 @@
+<div class='container'>
+<mat-horizontal-stepper [linear]="isLinear" #stepper>
+  <mat-step [stepControl]="firstFormGroup">
+    <form #firstFormGroup="ngForm">
+      <ng-template matStepLabel>Mesto isporuke</ng-template>
+      <mat-form-field>
+        <input matInput placeholder="Unesite adresu" name="adresa" ngModel #adresa="ngModel" required>
+      </mat-form-field><br>
+      <mat-form-field>
+        <mat-label>Grad</mat-label>
+        <mat-select [(ngModel)]="selectedCity" name="city">
+          <mat-option *ngFor="let city of cities" [value]="city">
+            {{city.naziv}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field><br>
+      <mat-form-field>
+          <input matInput placeholder="Kontakt (alternativni)" name="telefon" ngModel #telefon="ngModel" required>
+          <mat-icon matSuffix>phone</mat-icon>
+      </mat-form-field>
+      <div>
+        <button class='primary' mat-button matStepperNext (click)="populateAddress(firstFormGroup)">Dalje</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="secondFormGroup">
+    <form #secondFormGroup="ngForm">
+      <ng-template matStepLabel>Potvrdite korpu</ng-template>
+      <div class="alert alert-warning" *ngIf='korpa===null'>
+        Molimo vas da dodate artikle u korpu kako biste napravili narudzbinu.
+      </div>
+      <div class="products-by-prodavac" *ngFor='let p of korpa?.stavke' scope="col">
+        <div class='row'>
+
+          <div class='col-md-5 col-sm-4 prodavac-name'>Prodavac: {{p.prodavac.ime}} {{p.prodavac.prezime}}
+          </div>
+          <div class='col-md-3 col-sm-4 prodavac-name'>Izabrana dostava: {{p.izabranaDostava}}
+          </div>
+          <div class='col-md-3 col-sm-4 prodavac-name'>Ukupno: {{izracunajSumu(p)}}
+          </div>
+        </div>
+        <hr>
+        <div class='row' *ngFor='let a of p.artikli'>
+          <div class='col-md-3'><img [src]="formImg(a.artikal.slika.picByte)" height="90px" width="90px"></div>
+          <div class='col-md-2'>{{a.artikal.naziv}}({{a.artikal.cena}} din.) </div>
+          <div class='col-md-2'>{{a.kolicina}} kom.</div>
+
+          <div class='col-md-3'>{{a.vrednost}} din.</div>
+          <hr>
+        </div>
+        <hr>
+      </div>
+      <div>
+        <button mat-button matStepperPrevious class='primary'>Nazad</button>
+        <button mat-button routerLink='/cart' class='primary'>Vrati se na korpu</button>
+        <button mat-button matStepperNext (click)='potvrdi()' class='primary add' *ngIf='korpa?.stavke'>Potvrdi narudzbinu</button>
+      </div>
+    </form>
+  </mat-step>
+  </mat-horizontal-stepper>
+</div>

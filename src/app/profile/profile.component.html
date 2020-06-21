@@ -1,0 +1,58 @@
+<div class='container'>
+  <img src= '../../assets/images/profile-cover.jpg' class="img-fluid" >
+  <div class = 'row'>
+    <div class='card'>
+      <div class='card-header'>
+        <img src= '../../assets/images/img-7.jpg' class='profile-img'>
+
+      </div>
+      <div class='card-body'>
+        <p class='basic-info'>Ime: {{profile?.ime}} {{profile?.prezime}}</p>
+        <p class='infos'>Naziv gazdinstva: {{profile?.nazivGazdinstva ? profile?.nazivGazdinstva : '/'}}</p>
+        <p class='infos'>Kontakt telefon: {{profile?.kontakt}} email: {{profile?.email}}</p>
+        <p class='city'>Ulica i grad: {{profile?.ulica}}, {{profile?.grad.naziv}}</p>
+        <p class='infos'>Direktna isporuka: {{profile?.direktnaIsporukaMoguca === true ? 'Moguca' : 'Nije moguca'}}</p>
+        <p class='infos'>Kurirska isporuka: {{profile?.kurirskaIsporukaMoguca === true ? 'Moguca' : 'Nije moguca'}}</p>
+        <p class='desc'>Dodatno: {{profile?.opis}}</p>
+
+      </div>
+
+      <div class='row'>
+        <div class='col'>
+          <button type="button" (click)='ucitajProizvode();'>Prikazi proizvode</button>
+        </div>
+
+      </div>
+    </div>
+
+    </div>
+
+    <div class="row">
+
+      <!-- <div class=""> -->
+        <div class=" col-md-3 col-sm-4 col-xs-6 product-grid" *ngFor='let p of products' (click)='prikaziDetalje(p.id)'>
+            <div class="product-image">
+                <a href="#">
+                    <img class="pic-1" src="../../assets/images/img-7.jpg">
+                    <img class="pic-2" src="../../assets/images/img-7.jpg">
+                </a>
+                <span class="product-trend-label">{{p.kategorija.naziv}}</span>
+                <ul class="social">
+                    <li><button type="button" class="button-dodaj"> Dodaj u korpu</button> </li>
+                </ul>
+            </div>
+            <div class="product-content">
+                <h3 class="title"><a href="#">{{p.naziv}}</a></h3>
+                <div class="price">Cena: {{p.cena}} / {{p.kolicina}}</div>
+            </div>
+
+            <!-- <hr> -->
+
+        </div>
+
+      </div>
+
+
+
+</div>
+

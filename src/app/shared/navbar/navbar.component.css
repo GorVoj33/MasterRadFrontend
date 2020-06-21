@@ -1,0 +1,43 @@
+.navbar-toggler-icon{
+  color: black;
+}
+.navbar{
+  /* position: fixed; */
+  border-bottom: 4px solid rgba(63, 58, 58, 0.212);
+  /* border-bottom: 4px solid rgba(255,255,255,0.6); */
+}
+
+.nav-item {
+  font-size: 22px;
+  /* margin-left: 8px; */
+  /* border: 2px solid orange; */
+  /* border-radius: 35px; */
+  text-align: center;
+  color: black;
+}
+.dropdown-item{
+  font-size: 14px;
+
+}
+
+ul > li {
+  padding-top: 10px;
+  padding-right: 15px;
+}
+.nav-link{
+  padding-top: 0;
+}
+.nav-item .nav-link{
+  /* color: white; */
+  /* font-weight: lighter; */
+  color: black;
+}
+.icon {
+  font-size: 32px;
+  color: black;
+}
+.logo{
+  margin-left: 80px;
+  width: 250px;
+  height: 250px;
+}

@@ -1,0 +1,57 @@
+<app-navbar></app-navbar>
+<div class="container">
+  <div class="row">
+    <div class="col-md-5">
+      <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img [src]="formImg(product.slika.picByte)"  height='320px' width="320px" class="d-block w-100" alt="...">
+          </div>
+        </div>
+        <!-- <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a> -->
+      </div>
+    </div>
+    <div class="col-md-7">
+      <p class='kategorija text-center'>{{product?.kategorija?.naziv}}</p>
+      <h2>{{product?.naziv}}</h2>
+      <h5 *ngIf='product.prodavac.gazdinstvo'>{{product?.prodavac.ime}} {{product?.prodavac.prezime}}</h5>
+      <p *ngIf='product.prodavac.gazdinstvo !== ""'>Gazdinstvo: {{product?.prodavac.gazdinstvo}} </p>
+      <hr>
+      {{product?.opis}}
+      <hr>
+      <p class='price'>Cena: {{product?.cena}} din.</p>
+
+      <h5><b>Pakovanje: {{product?.kolicina}}</b></h5>
+      <p><b>Dostupno: <mat-icon  class='green'> check_circle</mat-icon></b></p>
+      <p><b>Slanje kurirskom službom:</b> <span class="material-icons" *ngIf='product.slanjeKuriromMoguce'>
+        done
+        </span>
+        <span class="material-icons clear" *ngIf='!product.slanjeKuriromMoguce'>
+          clear
+        </span>
+      </p>
+      <p><b>Poreklo: {{product?.poreklo}}</b></p>
+
+      <p class='kolicina'>
+        <label class='normal-text'>Kolicina:</label>
+        <mat-icon class='icon' (click)='smanjiKolicinu()'>remove</mat-icon>
+        <b>{{kolicina}}</b>
+        <mat-icon class='icon' (click)='povecajKolicinu()'>add</mat-icon>
+
+        <button type="button" id='add-btn' class="btn btn-default cart" (click)='dodajUKorpu()'>{{btnText}}</button>
+
+
+
+    </div>
+  </div>
+  <div class='row'>
+    <app-comments></app-comments>
+  </div>
+</div>

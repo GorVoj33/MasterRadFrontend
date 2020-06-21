@@ -1,0 +1,15 @@
+*{
+  font-family: sans-serif;
+}
+.btn-primary {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  float: right;
+}
+.form-row{
+  margin-top: 25px;
+}
+.container{
+  background: whitesmoke;
+  border-radius: 5px;
+}
