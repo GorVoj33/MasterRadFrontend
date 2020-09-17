@@ -56,7 +56,8 @@
 
 }
 .input-field{
-  width: 100%;
+  width: 40%;
+  /* padding-left: 50px; */
   padding: 10px 0;
   margin: 5px 0;
   border-left: 0;
@@ -66,6 +67,7 @@
 
   outline: none;
   background: transparent;
+  margin-left: 40px;
 }
 .submit-btn{
   /* width: 25%; */
@@ -73,13 +75,14 @@
   cursor: pointer;
   display: block;
   margin: auto;
-  background: linear-gradient(to right, #ff105f, #ffad06);
+  background: linear-gradient(to right, #d7f7da, green);
   border:0;
   outline: none;
   border-radius: 30px;
   font-size: 16px;
   color: whitesmoke;
   margin-top: 20px;
+  font-weight: 600;
 }
 .check-box{
   margin: 30px 10px 20px 0;
@@ -131,7 +134,7 @@
 
 }
 .active {
-  background: linear-gradient(to right, #ff105f, #ffad06);
+  background: linear-gradient(to right, #d7f7da, green);
   color: white;
   padding-top: 10px;
   transition: .6s;
@@ -144,4 +147,23 @@
 }
 .toggle-btn :hover{
   color:red;
+}
+.form-check {
+  margin-left: 40px;
+}
+.left {
+  margin-left: 40px;
+}
+.green {
+  color: white;
+  background: green;
+}
+input[type="file"] {
+  display: none;
+}
+.custom-file-upload {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
 }

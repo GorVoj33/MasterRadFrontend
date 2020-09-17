@@ -3,10 +3,12 @@ export class RegistracijaKupcaDto {
   prezime: string;
   email: string;
   password: string;
-  constructor(ime, prezime, email, pass) {
+  razlog: string;
+  constructor(ime, prezime, email, pass, razlog) {
     this.ime = ime;
     this.prezime = prezime;
     this.email = email;
     this.password = pass;
+    this.razlog = razlog;
   }
 }

@@ -259,3 +259,9 @@
   border: 1.5px solid blue;
   color: blue;
 }
+.prikazi-btn {
+  background: #87b68b;
+  color: white;
+  font-weight: 600;
+  width: 25%;
+}

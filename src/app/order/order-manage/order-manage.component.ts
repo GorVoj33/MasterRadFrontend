@@ -9,19 +9,31 @@ import { AuthService } from 'src/app/services/auth.service';
   styleUrls: ['./order-manage.component.css']
 })
 export class OrderManageComponent implements OnInit {
-  userId: number;
-  orders: OrderDetalji[] = [];
+  panelOpenState = false;
 
+
+  userId: number;
+  ordersFromOtherBuyers: OrderDetalji[] = [];
+  myOrders: OrderDetalji[] = [];
+  prodavacLoggedIn: boolean = false;
   constructor(private api: ApiServiceService,
     private auth: AuthService) { }
 
   ngOnInit() {
-    this.userId = this.auth.userId;
+    this.userId = this.auth.getAuthenticatedUserId();
     this.api.ucitajSveNarudzbine(this.userId).subscribe(
       response => {
-        this.orders = response;
+        this.myOrders = response;
       }
-    )
+    );
+    if (this.auth.getRoleOfAuthenticatedUser() === '[prodavac]') {
+      this.prodavacLoggedIn = true;
+      this.api.ucitajSveNarudzbineZaProdavca(this.userId).subscribe(
+        response => {
+          this.ordersFromOtherBuyers = response;
+        }
+      );
+    }
   }
   odbijNarudzbinu(order) {
     this.api.odbijNarudzbinu(order).subscribe(
@@ -42,5 +54,24 @@ export class OrderManageComponent implements OnInit {
         }
       }
     );
+  }
+  sum(stavke) {
+    var sum = 0;
+    for(var stavka of stavke) {
+      sum += stavka.cenaStavke;
+    }
+    return sum;
+  }
+
+  getColor(order) {
+    // #d7f7da
+    // #ed7b87
+    if(order.odobrena) {
+      return '#d7f7da';
+    }
+    else if (order.datumOdobrenja===null && order.datumOdbijanja===null){
+      return '#d7d4fc';
+    }
+    else return '#ed7b87';
   }
 }

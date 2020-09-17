@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { Kategorija } from 'src/app/classes/kategorija.model';
 import { ApiServiceService } from 'src/app/services/api-service.service';
 import { MatDialog } from '@angular/material';
-import { NovaKategorijaDto } from 'src/app/dtos/novaKategorijaDto.model';
 import { MyDialogComponent } from 'src/app/my-dialog/my-dialog.component';
+import { NovaKategorijaDto } from 'src/app/dtos/novaKategorijaDto.model';
 
 @Component({
-  selector: 'app-category',
-  templateUrl: './category.component.html',
-  styleUrls: ['./category.component.css']
+  selector: 'app-create-category',
+  templateUrl: './create-category.component.html',
+  styleUrls: ['./create-category.component.css']
 })
-export class CategoryComponent implements OnInit {
+export class CreateCategoryComponent implements OnInit {
+
   selectedFileForCategory: File;
 
   constructor(private apiService: ApiServiceService, private dialog: MatDialog) { }
@@ -48,5 +48,4 @@ export class CategoryComponent implements OnInit {
   onFileChangedForCategory(event) {
     this.selectedFileForCategory = event.target.files[0];
   }
-
 }

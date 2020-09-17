@@ -1,6 +1,65 @@
 
+ <app-navbar></app-navbar>
 <div class='container'>
-  <div class='narudzbina' *ngFor='let order of orders'>
+
+
+  <div class="alert alert-warning" role="alert">
+    Moje narudzbine
+  </div>
+  <div class='order'  *ngFor='let order of myOrders'>
+  <mat-accordion
+  >
+    <mat-expansion-panel hideToggle>
+      <mat-expansion-panel-header [ngStyle] = "{'background': getColor(order)}">
+        <mat-panel-title>
+          {{order.kupac.ime}} {{order.kupac.prezime}}
+        </mat-panel-title>
+        <mat-panel-description>
+          {{order.datumKreiranja  | date:'dd.MM.yyyy HH:mm'}}h
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <p>Mesto isporuke: {{order.ulica}}, {{order.grad.naziv}}</p>
+      <p>Kontakt/napomena: {{order.napomena}}</p>
+      <p>Isporuka: {{order.nacinIsporuke}}</p>
+      <div class='info'>
+        <p *ngIf='order.odobrena' class='accepted'>Status: Odobrena ({{order.datumOdobrenja | date:'dd.MM.yyyy HH:mm'}}h)</p>
+        <p *ngIf='order.datumOdobrenja===null && order.datumOdbijanja===null'>Status: Na cekanju</p>
+        <p *ngIf='!order.odobrena && order.datumOdbijanja!==null' class='denied'>Status: Odbijena ({{order.datumOdbijanja | date:'dd.MM.yyyy HH:mm'}}h)</p>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel (opened)="panelOpenState = true"
+                         (closed)="panelOpenState = false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Iznos: {{sum(order.stavke)}} din.
+        </mat-panel-title>
+        <mat-panel-description>
+          Broj stavki: {{order.stavke.length}}
+          <!-- Currently I am {{panelOpenState ? 'open' : 'closed'}} -->
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <table class="table">
+        <thead class='thead-dark'>
+          <tr>
+            <th scope="col">Artikal</th>
+            <th scope="col">Kolicina</th>
+            <th scope="col">Ukupna vrednost(din)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor='let stavka of order.stavke'>
+            <td>{{stavka.artikal.naziv}}</td>
+            <td>{{stavka.kolicina}}</td>
+            <td>{{stavka.cenaStavke}}</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+
+  <!-- <div class='narudzbina' *ngFor='let order of myOrders'>
     <h5>Narudzbina: {{order.kupac.ime}} {{order.kupac.prezime}}</h5>
     <div class='header-order'>
       Kupac: {{order.kupac.ime}} {{order.kupac.prezime}}
@@ -24,7 +83,6 @@
       </thead>
       <tbody>
         <tr *ngFor='let stavka of order.stavke'>
-          <!-- <th scope="row">1</th> -->
           <td>{{stavka.artikal.naziv}}</td>
           <td>{{stavka.kolicina}}</td>
           <td>{{stavka.cenaStavke}}</td>
@@ -32,13 +90,108 @@
 
       </tbody>
     </table>
-    <div class='managing'>
-      <button type="button" class="btn btn-danger" (click)='odbijNarudzbinu(order)' *ngIf='order.datumOdbijanja===null && order.odobrena===false'>Odbij</button>
-      <button type="button" class="btn btn-primary" style="float: right;" (click)='prihvatiNarudzbinu(order)' *ngIf='order.datumOdbijanja===null && order.datumOdobrenja===null' >Prihvati</button>
+    <hr>
+    <hr>
+  </div> -->
+  <div *ngIf='prodavacLoggedIn'>
+    <div class="alert alert-warning" role="alert">
+      Pristigle narudzbine
     </div>
-    <hr>
-    <hr>
-  </div>
+    <div class='order'  *ngFor='let order of myOrders'>
+      <mat-accordion
+      >
+        <mat-expansion-panel hideToggle>
+          <mat-expansion-panel-header [ngStyle] = "{'background': getColor(order)}">
+            <mat-panel-title>
+              {{order.kupac.ime}} {{order.kupac.prezime}}
+            </mat-panel-title>
+            <mat-panel-description>
+              {{order.datumKreiranja  | date:'dd.MM.yyyy HH:mm'}}h
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <p>Mesto isporuke: {{order.ulica}}, {{order.grad.naziv}}</p>
+          <p>Kontakt/napomena: {{order.napomena}}</p>
+          <p>Isporuka: {{order.nacinIsporuke}}</p>
+          <div class='info'>
+            <p *ngIf='order.odobrena' class='accepted'>Status: Odobrena ({{order.datumOdobrenja | date:'dd.MM.yyyy HH:mm'}}h)</p>
+            <p *ngIf='order.datumOdobrenja===null && order.datumOdbijanja===null'>Status: Na cekanju</p>
+            <p *ngIf='!order.odobrena && order.datumOdbijanja!==null' class='denied'>Status: Odbijena ({{order.datumOdbijanja | date:'dd.MM.yyyy HH:mm'}}h)</p>
+          </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel (opened)="panelOpenState = true"
+                             (closed)="panelOpenState = false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Iznos: {{sum(order.stavke)}} din.
+            </mat-panel-title>
+            <mat-panel-description>
+              Broj stavki: {{order.stavke.length}}
+              <!-- Currently I am {{panelOpenState ? 'open' : 'closed'}} -->
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <table class="table">
+            <thead class='thead-dark'>
+              <tr>
+                <th scope="col">Artikal</th>
+                <th scope="col">Kolicina</th>
+                <th scope="col">Ukupna vrednost(din)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor='let stavka of order.stavke'>
+                <td>{{stavka.artikal.naziv}}</td>
+                <td>{{stavka.kolicina}}</td>
+                <td>{{stavka.cenaStavke}}</td>
+              </tr>
 
+            </tbody>
+          </table>
+          <div class='managing'>
+            <button type="button" class="btn btn-danger" (click)='odbijNarudzbinu(order)' *ngIf='order.datumOdbijanja===null && order.odobrena===false'>Odbij narudzbinu</button>
+            <button type="button" class="btn btn-primary" style="float: right;" (click)='prihvatiNarudzbinu(order)' *ngIf='order.datumOdbijanja===null && order.datumOdobrenja===null' >Prihvati narudzbu</button>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+    <!-- <div class='narudzbina' *ngFor='let order of ordersFromOtherBuyers'>
+      <h5>Narudzbina: {{order.kupac.ime}} {{order.kupac.prezime}}</h5>
+      <div class='header-order'>
+        Kupac: {{order.kupac.ime}} {{order.kupac.prezime}}
+        <p>Datum kreiranja: {{order.datumKreiranja  | date:'dd.MM.yyyy HH:mm'}}h</p>
+        <p>Mesto isporuke: {{order.ulica}}, {{order.grad.naziv}}</p>
+        <p>Kontakt/napomena: {{order.napomena}}</p>
+        <p>Isporuka: {{order.nacinIsporuke}}</p>
+        <div class='info'>
+          <p *ngIf='order.odobrena' class='accepted'>Status: Odobrena ({{order.datumOdobrenja | date:'dd.MM.yyyy HH:mm'}}h)</p>
+          <p *ngIf='order.datumOdobrenja===null && order.datumOdbijanja===null'>Status: Na cekanju</p>
+          <p *ngIf='!order.odobrena && order.datumOdbijanja!==null' class='denied'>Status: Odbijena ({{order.datumOdbijanja | date:'dd.MM.yyyy HH:mm'}}h)</p>
+        </div>
+      </div>
+      <table class="table">
+        <thead class='thead-dark'>
+          <tr>
+            <th scope="col">Artikal</th>
+            <th scope="col">Kolicina</th>
+            <th scope="col">Ukupna vrednost(din)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor='let stavka of order.stavke'>
+
+            <td>{{stavka.artikal.naziv}}</td>
+            <td>{{stavka.kolicina}}</td>
+            <td>{{stavka.cenaStavke}}</td>
+          </tr>
+
+        </tbody>
+      </table>
+      <div class='managing'>
+        <button type="button" class="btn btn-danger" (click)='odbijNarudzbinu(order)' *ngIf='order.datumOdbijanja===null && order.odobrena===false'>Odbij</button>
+        <button type="button" class="btn btn-primary" style="float: right;" (click)='prihvatiNarudzbinu(order)' *ngIf='order.datumOdbijanja===null && order.datumOdobrenja===null' >Prihvati</button>
+      </div>
+      <hr>
+      <hr>
+    </div> -->
+  </div>
 
 </div>

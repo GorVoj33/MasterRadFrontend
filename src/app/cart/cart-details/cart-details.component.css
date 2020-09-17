@@ -142,3 +142,14 @@ margin-left: 55px;
   text-align: center;
   margin-top: 10px;
 }
+.kolicina-input {
+  width: 58px;
+  border: 2px solid green;
+}
+.done-icon {
+  border: 0px;
+  color: green;
+  background: white;
+  font-size: 25px;
+  font-weight: 700;
+}

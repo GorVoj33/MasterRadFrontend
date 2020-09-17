@@ -3,7 +3,7 @@
   font-family: Georgia, 'Times New Roman', Times, serif;
 }
 .divider {
-  margin-top: 10px;
+  margin-top: 20px;
   color: green;
 }
 .btn {
@@ -14,4 +14,24 @@
 .meni {
   padding-top: 20px;
   font-size: 23px;
+}
+mat-card {
+  margin-bottom: 50px;
+  border: 2px solid green;
+}
+.label {
+  margin-right: 15px;
+}
+.dostava {
+  border: 1px dashed green;
+  width: 30%;
+  margin-bottom: 15px;
+}
+.direktna{
+  margin-left: 20px;
+  /* margin-right: 50px; */
+}
+
+.kurirska {
+  margin-left: 20px;
 }

@@ -6,10 +6,26 @@
   border:  1px solid black;
 }
 .accepted {
-  color: green;
+  color: #87b68b;
   font-weight: 700;
 }
 .denied {
-  color: red;
+  color: #ed7b87;
   font-weight: 700;
 }
+.mat-form-field + .mat-form-field {
+  margin-left: 8px;
+
+}
+
+.order{
+  border-bottom: 2px solid black;
+  margin-bottom: 20px;
+}
+.alert-warning {
+  font-size: 30px;
+  text-align: center;
+}
+/* mat-expansion-panel{
+  background: #d7f7da;
+} */

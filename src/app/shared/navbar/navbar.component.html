@@ -1,4 +1,5 @@
 
+
 <nav class='navbar navbar-expand-md navbar-light '>
   <!-- bg-dark -->
   <p routerLink='/home'><img src= '../../../assets/images/logo.png' class="logo"></p>
@@ -6,19 +7,41 @@
   data-target='#navbarSupportedContent'>
   <span class="navbar-toggler-icon"></span>
 </button>
-<div class='collapse navbar-collapse' id='navbarSupportedContent'>
+<div class=' collapse navbar-collapse' id='navbarSupportedContent'>
   <ul class="navbar-nav ml-auto">
+    <div class="dropdown">
+
+      <!--Trigger-->
+      <button *ngIf='userLoggedIn' class="btn  dropdown-toggle btn-green" type="button" id="dropdownMenu1" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">Dodatne opcije</button>
+
+      <!--Menu-->
+      <div class="dropdown-menu dropdown-primary dropdown">
+        <p class="dropdown-item" routerLink='/create-product' *ngIf='prodavacLoggedIn'>Dodaj artikal</p>
+        <p class="dropdown-item" routerLink='/manage-orders'>Narudzbine</p>
+      </div>
+    </div>
+    <!-- <div class="dropdown" *ngIf='prodavacLoggedIn' >
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Opcije (PRODAVAC)
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <p class="dropdown-item" routerLink='/create-product'>Dodaj artikal</p>
+        <p class="dropdown-item"  routerLink='/manage-orders'>Narudzbine</p>
+
+      </div>
+    </div> -->
     <li class='nav-item active' routerLink='/products'>
-      <p>Proizvodi</p>
+      <p>Artikli</p>
     </li>
-    <li class='nav-item'>
-      <p>Recepti</p>
+    <li class='nav-item' routerLink='/profiles'>
+      <p>Prodavci</p>
     </li>
     <li class='nav-item dropdown'>
       <p class='nav-link dropdown-toggle' id='navbarDropdown' role='button' data-toggle='dropdown'>Kategorije</p>
       <!-- nav-link -->
       <div class='dropdown-menu' aria-labelledby='navbarDropdown'>
-        <div class='dropdown-item' routerLink='' *ngFor='let kat of kategorije'>{{kat.naziv}}
+        <div class='dropdown-item' routerLink='/category/{{kat.id}}' *ngFor='let kat of kategorije' >{{kat.naziv}}
           <hr/>
         </div>
 
@@ -26,14 +49,20 @@
 
     </li>
     <li class='nav-item'>
-      <p>O nama</p>
+      <mat-icon matBadge="{{counter}}" class='icon' matBadgePosition="after" matBadgeColor="accent" routerLink='/cart'>add_shopping_cart</mat-icon>
     </li>
-    <li>
-      <mat-icon matBadge="{{counter}}" class='icon' matBadgePosition="after" matBadgeColor="accent">add_shopping_cart</mat-icon>
-    </li>
-    <li class='nav-item'>
+    <li class='nav-item register' *ngIf='!userLoggedIn'>
       <p routerLink='/auth'>Registracija</p>
     </li>
+    <li class='nav-item' *ngIf='adminLoggedIn' >
+      <p routerLink='/admin/dashboard'>Admin panel</p>
+    </li>
+    <li class='nav-item' *ngIf='userLoggedIn' >
+      <p routerLink='/auth' (click)='logout()'>Odjavi me</p>
+    </li>
+
+
   </ul>
 </div>
 </nav>
+

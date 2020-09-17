@@ -1,0 +1,171 @@
+<app-navbar></app-navbar>
+<div class='container'>
+  <div class = 'controls-container'>
+
+    <form [formGroup]="updateFormGroup">
+      <ng-template>Osnovni podaci o artiklu</ng-template>
+
+        <div class='control'>
+          <label class='label' for='naziv'>Naziv</label>
+          <mat-form-field appearance="outline" class='input-field'>
+            <mat-label>{{product?.naziv}}</mat-label>
+            <input matInput formControlName="naziv">
+
+            <!-- <mat-error >Duzina naziva artikla mora biti makar 3 karaktera</mat-error> -->
+          </mat-form-field>
+
+        </div>
+
+        <div class='control'>
+          <label class='label' for='opis'>Opis:</label>
+          <mat-form-field appearance="outline" class='input-field'>
+            <mat-label>Opis</mat-label>
+            <textarea matInput value='product?.opis' formControlName="opis"> </textarea>
+            <!-- <mat-error *ngIf=''></mat-error> -->
+            <!-- <mat-error *ngIf = 'updateFormGroup.get("loi").errors?.min'>Minimum survey duration is 1 minutes</mat-error>
+            <mat-error *ngIf = 'updateFormGroup.get("loi").errors?.max'>Maximum survey duration is 50 minutes</mat-error> -->
+          </mat-form-field>
+
+          <!-- <p *ngIf = 'firstFormGroup.get("loi").errors?.min'>Between 2 and 50</p> -->
+        </div>
+        <div class='control'>
+
+          <label class='label' for="cena">Cena jednog proizvoda:</label>
+          <mat-form-field appearance="outline" class='input-field'>
+            <mat-label>Cena</mat-label>
+            <input matInput formControlName="cena">
+
+            <span matSuffix>din</span>
+            <!-- <mat-error *ngIf = 'updateFormGroup.get("cena").errors?.min'>Cena mora biti veća od 0 dinara.</mat-error> -->
+          </mat-form-field>
+        </div>
+        <div class='control'>
+          <label class='label' for="zaliha">Broj komada na zalihama:</label>
+          <mat-form-field appearance="outline" class='input-field'>
+            <mat-label>Zaliha</mat-label>
+            <input matInput formControlName="zaliha">
+            <span matSuffix>kom</span>
+
+            <!-- <mat-error *ngIf = 'updateFormGroup.get("zaliha").errors?.min'>Zaliha mora biti veća od 0.</mat-error> -->
+          </mat-form-field>
+        </div>
+
+        <div class='control'>
+          <label class='label' for="poreklo">Poreklo:</label>
+          <mat-form-field appearance="outline" class='input-field'>
+            <mat-label>Poreklo</mat-label>
+            <input matInput  formControlName="poreklo">
+
+
+          </mat-form-field>
+        </div>
+
+
+        <div class='control'>
+          <label class='label' for="kolicina">Gramaža/zapremina:</label>
+          <mat-form-field appearance="outline" class='input-field'>
+            <mat-label>Količina</mat-label>
+            <input matInput formControlName="kolicina">
+
+            <mat-error *ngIf = 'updateFormGroup.get("kolicina").errors?.minLength'>Količina mora biti uneta.</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class='control'>
+          <label class='label' for='country'>Kategorija:</label>
+          <mat-form-field appearance="outline" class='input-field' id='country-field'>
+            <mat-label>Izaberite kategoriju</mat-label>
+            <mat-select name="kategorija" [(value)]="selektovanaKategorija">
+              <mat-option *ngFor="let kategorija of kategorije" [value]="kategorija">
+                {{kategorija.naziv}}
+              </mat-option>
+            </mat-select>
+            <mat-hint>{{product?.kategorija.naziv}}</mat-hint>
+          </mat-form-field>
+
+        </div>
+        <div class="form-check">
+          <input type="checkbox"  [checked]="product?.slanjeKuriromMoguce" (click)='promeniMogucnostSlanjaArtiklaKurirom()'>
+          <label class="form-check-label" for="daLiMozeKurirom"><u>Proizvod može da se šalje kurirskom službom.</u></label>
+        </div>
+        <!-- <div class='control'>
+          <label class='label' for="kategorija">Broj komada na zalihama:</label>
+          <mat-form-field appearance="outline" class='input-field'>
+            <select id="category" class="form-control" name='category' [(value)]="selektovanaKategorija">
+
+              <option *ngFor = "let kat of kategorije" (onSelectionChange)='changeSelection(kat)'>
+                {{kat.naziv}}
+              </option>
+            </select>
+          </mat-form-field>
+        </div> -->
+        <button type="submit" class="btn btn-primary">Odustani</button>
+        <button type="submit" class="btn btn-primary" (click)='sacuvajArtikal()'>Sačuvaj i objavi proizvod</button>
+
+
+    </form>
+
+    </div>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- <div class="container">
+  <form [formGroup]="updateFormGroup">
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="inputNaziv">Naziv proizvoda</label>
+        <input matInput placeholder="{{product?.naziv}}" formControlName="naziv">
+      </div>
+
+
+      <div class="form-group col-md-6">
+        <label for="opis">Opis proizvoda(opciono polje)</label>
+        <textarea matInput placeholder="{{product?.opis}}" formControlName="opis"> </textarea>
+      </div>
+    </div>
+    <div class='form-row'>
+      <div class="form-group col-md-4">
+        <label for="cena">Cena jednog proizvoda</label>
+        <input matInput placeholder="{{product?.cena}}" formControlName="cena">
+        <span matSuffix>din</span>
+        <mat-error *ngIf = 'updateFormGroup.get("cena").errors?.min'>Cena mora biti veća od 0 dinara.</mat-error>
+      </div>
+      <div class="form-group col-md-4">
+        <label for="zaliha">Broj komada dostupnih za prodaju (zalihe)</label>
+        <input type='number' matInput placeholder="{{product?.zaliha}}" formControlName="zaliha">
+      </div>
+      <div class="form-group col-md-4">
+        <label for="poreklo">Poreklo proizvoda</label>
+        <input matInput placeholder="{{product?.poreklo}}" formControlName="poreklo">
+      </div>
+    </div>
+    <div class='form-row'>
+      <div class="form-group col-md-6">
+        <label for="category">Izaberite kategoriju proizvoda koji proizvodite</label>
+        <select id="category" class="form-control" name='category' [(value)]="selektovanaKategorija">
+
+          <option *ngFor = "let kat of kategorije" (onSelectionChange)='changeSelection(kat)'>
+            {{kat.naziv}}
+          </option>
+        </select>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="inputPassword4">Gramaža/zapremina</label>
+        <input type="text" matInput placeholder="{{product?.kolicina}}" formControlName="kolicina">
+      </div>
+    </div>
+    <div class="form-check">
+      <input type="checkbox"  [checked]="product?.slanjeKuriromMoguce" (click)='promeniMogucnostSlanjaArtiklaKurirom()'>
+      <label class="form-check-label" for="daLiMozeKurirom"><u>Proizvod može da se šalje kurirskom službom.</u></label>
+    </div>
+
+    <button type="submit" class="btn btn-primary" disabled='!updateFormGroup.valid' (click)='sacuvajArtikal()'>Sačuvaj i objavi proizvod</button>
+  </form>
+</div> -->

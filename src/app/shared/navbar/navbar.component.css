@@ -6,13 +6,17 @@
   border-bottom: 4px solid rgba(63, 58, 58, 0.212);
   /* border-bottom: 4px solid rgba(255,255,255,0.6); */
 }
-
+.nav-item :hover {
+  color: green;
+  font-size: 35px;
+}
 .nav-item {
-  font-size: 22px;
+  font-size: 30px;
   /* margin-left: 8px; */
   /* border: 2px solid orange; */
   /* border-radius: 35px; */
   text-align: center;
+  font-weight: 500;
   color: black;
 }
 .dropdown-item{
@@ -21,7 +25,7 @@
 }
 
 ul > li {
-  padding-top: 10px;
+  padding-top: 5px;
   padding-right: 15px;
 }
 .nav-link{
@@ -35,9 +39,39 @@ ul > li {
 .icon {
   font-size: 32px;
   color: black;
+
 }
 .logo{
   margin-left: 80px;
   width: 250px;
   height: 250px;
+}
+.register {
+  border: 1px solid green;
+  color:green;
+  font-weight: 700;
+}
+.dropdown-item {
+  background: whitesmoke;
+  font-weight: 700;
+}
+.dropdown {
+  background: whitesmoke;
+  /* background-color: #4CAF50; */
+  /* border: 1px solid red; */
+}
+.btn-green {
+  background-color: green;
+  color: white;
+}
+.dropdown-menu {
+  border: 2px solid green;
+}
+.dropdown .dropdown-item{
+  color: green;
+  font-size: 18px;
+  font-weight: 700;
+  background: whitesmoke;
+
+
 }

@@ -19,8 +19,12 @@ export interface ArtikalDetailDto{
     kurirskaIsporuka: boolean;
     gazdinstvo: string;
     direktnaIsporuka: boolean;
+    email: string;
   };
   slanjeKuriromMoguce;
   slika: Slika;
   zaliha: number;
+  aktivan: boolean;
+  istaknut: boolean;
+  slicniArtikli: []
 }

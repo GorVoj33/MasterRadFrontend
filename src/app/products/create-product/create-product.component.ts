@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material';
 import { MyDialogComponent } from 'src/app/my-dialog/my-dialog.component';
 import { Prodavac } from 'src/app/classes/prodavac.model';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-create-product',
@@ -18,17 +19,18 @@ export class CreateProductComponent implements OnInit {
   pakovanja: Pakovanje[] = [];
   selectedCategory: Kategorija;
   selectedFile: File;
-  kategorije = [
-    {naziv: 'Kategorija 1'},
-    {naziv: 'Kategorija 2'},
-    {naziv: 'Kategorija 3'},
-  ];
+  kategorije:any = [];
   constructor(private apiService: ApiServiceService,
+    private auth: AuthService,
     private dialog: MatDialog,
     private router: Router) { }
 
   ngOnInit() {
-    //this.pakovanja = this.apiService.getPakovanja();
+    this.apiService.ucitajKategorije().subscribe(
+      response => {
+        this.kategorije = response;
+      }
+    )
   }
   sacuvajProizvod(formData) {
     var naziv = formData.value.naziv;
@@ -41,8 +43,9 @@ export class CreateProductComponent implements OnInit {
       daLiMozeKurirom = false;
     }
     var kolicina = formData.value.kolicina;
-
-    var artikal = new Artikal(-1, naziv, opis, cena, poreklo, kolicina, this.selectedCategory, daLiMozeKurirom, null , +zaliha);
+    console.log('ID ulogovanog prodavca: '+this.auth.getAuthenticatedUserId())
+    var prodavac = new Prodavac(null, null,this.auth.getAuthenticatedUser(),null,null,null,null,null,null, null);
+    var artikal = new Artikal(-1, naziv, opis, cena, poreklo, kolicina, this.selectedCategory, daLiMozeKurirom, prodavac , +zaliha);
 
 
     this.apiService.dodajArtikal(artikal).subscribe(

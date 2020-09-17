@@ -1,26 +1,69 @@
 <app-navbar></app-navbar>
 <div class="container">
-  <div class='row filter'>
-    <div class="col-md-6 col-sm-12 search">Pretraga: <input type="text" class='search-input'> </div>
-    <div class="col-md-2 col-sm-4 text-right">Sortiraj:</div>
-    <div class="col-md-2 col-sm-4 sort-naziv text-center">Naziv</div>
-    <div class="col-md-2 col-sm-4 sort-cena text-center">Cena</div>
+  <div class='row' *ngIf='dataLoading' >
+    <mat-spinner mode="indeterminate" style="left: 35%; top: 20%;"></mat-spinner>
   </div>
+  <div class='row filter'>
+    <div class="col-md-6 col-sm-12 col-lg-3 search"><b>Pretraga:</b> <input type="text" class='search-input' [(ngModel)]='filterProduct' (keyup)='prikaziFilter()'> </div>
+
+    <hr>
+    <div class="col-md-2 col-sm-4 col-lg-3 ">
+      <label class='green-text'>Kategorija:</label>
+      <select (change)='primeniFilterKategorija()' [(ngModel)]="selektovanaKategorija">
+        <option *ngFor="let kategorija of kategorije" [ngValue]="kategorija">
+          {{kategorija.naziv}} ({{kategorija.brojArtikala}})
+          <hr>
+        </option>
+      </select>
+    </div>
+
+
+    <div class="col-md-2 col-sm-4 col-lg-2 green-text">Sortiraj:</div>
+    <div class="col-md-2 col-sm-4 col-lg-1 sort-naziv text-center">Naziv
+      <!-- <span class="material-icons">
+        south
+        </span> -->
+      <span class="material-icons" *ngIf='ascName' (click)='sortByNameAsc()'>
+        north
+      </span>
+
+      <span class="material-icons" *ngIf='descName' (click)='sortByNameDesc()'>
+        south
+      </span>
+    </div>
+    <div class="col-md-2 col-sm-4 col-lg-1 sort-cena text-center">Cena
+
+      <span class="material-icons" *ngIf='ascPrice' (click)='sortByPriceAsc()'>
+        north
+        </span>
+
+        <span class="material-icons" *ngIf='descPrice' (click)='sortByPriceDesc()'>
+          south
+          </span>
+    </div>
+
+    <!-- <ngx-slider [(value)]="value" [options]="options"></ngx-slider> -->
+    <hr>
+  </div>
+  <div class='row'>
+    <ngx-slider [(value)]="minValue" [(highValue)]="maxValue" [options]="options" (click)='promeniFilterCena()'></ngx-slider>
+    <hr>
+    </div>
   <div class="row">
 
     <!-- <div class=""> -->
-      <div class=" col-md-3 col-sm-4 col-xs-6 product-grid" *ngFor='let p of products' (click)='prikaziDetalje(p.id)'>
+      <div class=" col-md-3 col-sm-4 col-xs-6 product-grid" *ngFor='let p of products' (click)='showProduct(p.id)'>
           <div class="product-image">
-                  <img [src]="formImg(p.slika.picByte)">
+                  <img [src]="formImg(p.slika.picByte)" width="400px" height="400px" >
                   <!-- <img [src]="formImg(p.slika.picByte)"> -->
               <span class="product-trend-label">{{p.kategorija.naziv}}</span>
               <ul class="social">
-                  <li><button type="button" class="button-dodaj"> Dodaj u korpu</button> </li>
+                  <li><button type="button" class="button-dodaj"> Prikaži</button> </li>
               </ul>
           </div>
           <div class="product-content">
               <h3 class="title"><a href="#">{{p.naziv}}</a></h3>
-              <div class="price">Cena: {{p.cena}} / {{p.kolicina}}</div>
+              <div class="price">Cena: {{p.cena}} din / {{p.kolicina}}</div>
           </div>
 
           <!-- <hr> -->

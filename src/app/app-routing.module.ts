@@ -10,31 +10,37 @@ import { MenubarComponent } from './shared/menubar/menubar.component';
 import { CartDetailsComponent } from './cart/cart-details/cart-details.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AdminPanelComponent } from './admin-panel/admin-panel.component';
-import { CategoryComponent } from './products/category/category.component';
+
 import { OrderComponent } from './order/order.component';
 import { ProfileListComponent } from './profile/profile-list/profile-list.component';
 import { OrderManageComponent } from './order/order-manage/order-manage.component';
 import { DashboardComponent } from './admin-panel/dashboard/dashboard.component';
+import { ErrorPageComponent } from './shared/error-page/error-page.component';
+import { AuthAdminService } from './services/auth-admin.service';
+import { AuthProdavacService } from './services/auth-prodavac.service';
+import { UpdateProductComponent } from './products/update-product/update-product.component';
 
 
 const routes: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
-  {path: 'home', component: HomeComponent},
+  {path: 'home', component: MenubarComponent},
 
   {path: 'auth', component: RegisterLoginComponent},
-  {path: 'admin/dashboard', component: DashboardComponent},
+  {path: 'admin/dashboard', component: AdminPanelComponent, canActivate: [AuthAdminService]},
   {path: 'products', component: ProductsComponent},
   {path: 'products/detail/:id', component: ProductDetailComponent},
+  {path: 'products/update/:id', component: UpdateProductComponent},
   {path: 'navbar', component: NavbarComponent},
-  {path: 'create-product', component: CreateProductComponent},
-  {path: 'menubar', component: MenubarComponent},
+  {path: 'create-product', component: CreateProductComponent, canActivate: [AuthProdavacService]},
+  // {path: 'menubar', component: MenubarComponent},
   {path: 'cart', component: CartDetailsComponent},
   {path: 'profile/:id', component: ProfileComponent},
-  {path: 'admin', component: AdminPanelComponent},
-  {path: 'category/:id', component: CategoryComponent},
+  // {path: 'admin', component: AdminPanelComponent},
+  {path: 'category/:id', component: ProductsComponent},
   {path: 'order', component: OrderComponent},
   {path: 'manage-orders', component: OrderManageComponent},
-  {path: 'profiles', component: ProfileListComponent}
+  {path: 'profiles', component: ProfileListComponent},
+  {path: 'error', component: ErrorPageComponent}
 ];
 
 @NgModule({

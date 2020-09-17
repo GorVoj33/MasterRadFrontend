@@ -1,33 +1,38 @@
+<app-navbar></app-navbar>
 <div class="container">
+
+  <div class='row' *ngIf='dataLoading' >
+    <mat-spinner mode="indeterminate" style="left: 35%; top: 20%;"></mat-spinner>
+  </div>
 <div class="row">
   <div class='col-md-4'>
 
     <div class='meni'>
-      Filter prodavaca prema
+      <p class="text-center text-uppercase">Filter prodavaca prema</p>
+
       <hr>
       <div>
-        <label>Grad</label>
+        <label class='label'>Grad</label>
         <select (change)='primeniFilterGrad()' [(ngModel)]="selektovaniGrad">
           <option *ngFor="let grad of gradovi" [ngValue]="grad">
             {{grad.naziv}}
           </option>
         </select>
-
-
       </div>
 
       <div>
         <hr>
-        <label>Ime ili prezime</label><br>
-        <input name="ime" [(ngModel)]='filterIme'  (keyup)='prikaziFilter()'>
+        <label class='label'>Ime ili prezime</label><br>
+        <input class='input-field' name="ime" [(ngModel)]='filterIme'  (keyup)='prikaziFilter()'>
       </div>
     </div>
     <hr>
   </div>
   <div class='col-8'>
-    <div *ngIf='noResults' class='alert alert-warning'>
+    <div *ngIf='profiles?.length === 0' class='alert alert-warning'>
       Nema profila koji ispunjavaju uslov pretrage.
     </div>
+
 <mat-card class="example-card" *ngFor='let profile of profiles'>
 
   <mat-card-header>
@@ -37,33 +42,40 @@
     <mat-card-subtitle>Ulica: {{profile?.ulica}}, {{profile?.grad.naziv}}</mat-card-subtitle>
     <mat-card-subtitle>{{profile?.email}}</mat-card-subtitle>
   </mat-card-header>
-  <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Prodavac nema sliku">
-  <mat-card-content>
-    <p>Direktna isporuka:  <span class="material-icons done" *ngIf='profile?.direktnaIsporukaMoguca'>
-      done
-    </span>
-    <span class="material-icons remove" *ngIf='!profile?.direktnaIsporukaMoguca'>
-      remove_circle
-    </span></p>
+  <img mat-card-image [src]="formImg(profile?.slika.picByte)" alt="Prodavac nema sliku" (click)='goToProfile(profile)'>
+    <mat-card-content>
+      <div class='dostava'>
+        <div class='direktna'>
+          Direktna isporuka:  <span class="material-icons done" *ngIf='profile?.direktnaIsporukaMoguca'>
+            done
+          </span>
+          <span class="material-icons remove" *ngIf='!profile?.direktnaIsporukaMoguca'>
+            remove_circle
+          </span>
+        </div>
 
-    <p>Kurirska isporuka:
-      <span class="material-icons done" *ngIf='profile?.kurirskaIsporukaMoguca'>
-        done
-      </span>
-      <span class="material-icons remove" *ngIf='!profile?.kurirskaIsporukaMoguca'>
-        remove_circle
-      </span>
-    </p>
-    <p class='opis'>
-      {{profile?.opis}}
-    </p>
-    <p>Minimalan iznos narudzbine: {{profile?.minimalnaCenaNarudzbine}}</p>
-  </mat-card-content>
-  <mat-card-actions>
-    <button mat-button class='btn'>Prikazi proizvode</button>
-  </mat-card-actions>
-  <hr class='divider'>
-</mat-card>
+        <div class='kurirska'>
+          Kurirska isporuka:
+          <span class="material-icons done" *ngIf='profile?.kurirskaIsporukaMoguca'>
+            done
+          </span>
+          <span class="material-icons remove" *ngIf='!profile?.kurirskaIsporukaMoguca'>
+            remove_circle
+          </span>
+        </div>
+
+      </div>
+      <p class='opis'>
+        {{profile?.opis}}
+      </p>
+
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-button class='btn' routerLink = '/profile/{{profile.id}}'>Detaljnije...</button>
+    </mat-card-actions>
+    <hr class='divider'>
+    </mat-card>
+
 </div>
 </div>
 </div>

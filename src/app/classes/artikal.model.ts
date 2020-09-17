@@ -15,7 +15,8 @@ export class Artikal {
   prodavac: Prodavac;
   zaliha?: number;
   slika?: Slika;
-  constructor (id: number, naziv: string, opis: string, cena: number, poreklo: string, kolicna: string, kategorija: Kategorija, mozeKurirom: boolean, prodavac: Prodavac, zaliha?: number, slika? : any) {
+  prodavacId?: number;
+  constructor (id: number, naziv: string, opis: string, cena: number, poreklo: string, kolicna: string, kategorija: Kategorija, mozeKurirom: boolean, prodavac: Prodavac, zaliha?: number, slika? : any, prodavacId?: number) {
     this.id = id;
     //this.slika = slika;
     this.naziv = naziv;
@@ -28,5 +29,6 @@ export class Artikal {
     this.prodavac = prodavac;
     this.zaliha = zaliha;
     this.slika = slika;
+    this.prodavacId = prodavacId;
   }
 }

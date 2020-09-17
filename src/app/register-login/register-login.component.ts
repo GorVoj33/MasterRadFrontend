@@ -8,6 +8,10 @@ import { RegistracijaProdavcaDto } from '../dtos/registracijaProdavcaDto.model';
 import { Prodavac } from '../classes/prodavac.model';
 import { RegistracijaKupcaDto } from '../dtos/registracijaKupcaDto.model';
 import { Grad } from '../classes/grad.model';
+import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
+import { MyDialogComponent } from '../my-dialog/my-dialog.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-register-login',
@@ -15,6 +19,9 @@ import { Grad } from '../classes/grad.model';
   styleUrls: ['./register-login.component.css']
 })
 export class RegisterLoginComponent implements OnInit {
+  dataLoading: boolean = false;
+  error: boolean = false;
+  errorMessage: string = '';
   form1: HTMLElement;
   form2: HTMLElement;
   form3: HTMLElement;
@@ -26,13 +33,17 @@ export class RegisterLoginComponent implements OnInit {
   box: any = document.getElementById('form-box');
   gradovi: Grad[] = [];
   selectedCity: Grad;
-  // gradovi: Grad[] = [
-  //   {id: '11000', naziv: 'Beograd'},
-  //   {id: '21000', naziv: 'Novi Sad'},
-  //   {id: '3000', naziv: 'Cacak'}
-  // ];
-
-  constructor(private apiService: ApiServiceService) { }
+  name: string = '';
+  selectedFile: any;
+  registerSuccessful: boolean = false;
+  passwordReenteredErrorK: boolean = false;
+  passwordReenteredErrorP: boolean = false;
+  imgProdavacDodat: boolean = false;
+  showFileErrorProdavac: boolean = false;
+  constructor(private apiService: ApiServiceService,
+              private authService: AuthService,
+              private router: Router,
+              private dialog: MatDialog) { }
 
   ngOnInit() {
     this.form1 = document.getElementById('f1');
@@ -43,21 +54,14 @@ export class RegisterLoginComponent implements OnInit {
     this.btn3 = document.getElementById('btn3');
     this.apiService.vratiListuGradova().subscribe(
       response => {
-
-        console.log(response)
         this.gradovi = response;
-        // for(var key in response) {
-        //   console.log('Objekat:')
-        //   var obj = response[key];
-        //   var grad=new Grad(obj['ptt'], obj['naziv']);
-        //   this.gradovi.push(grad);
-        //   console.log(grad);
-        // }
+        this.gradovi.sort((a, b) => (a.naziv < b.naziv ? -1 : 1));
       }
     );
     this.selectedCity = this.gradovi[0];
   }
   prikaziStranuZaRegistracijuKupca() {
+    this.error= false;
     this.btn1.classList.remove('active');
     this.btn3.classList.remove('active');
     this.btn2.classList.add('active');
@@ -66,6 +70,7 @@ export class RegisterLoginComponent implements OnInit {
     this.form3.style.display = 'none';
   }
   prikaziStranuZaRegistracijuProdavca(){
+    this.error = false;
     this.btn1.classList.remove('active');
     this.btn3.classList.add('active');
     this.btn2.classList.remove('active');
@@ -96,44 +101,66 @@ export class RegisterLoginComponent implements OnInit {
   }
 
   onSelectKupacConditionsAccepted() {
+
     this.registerKupacEnabled = !this.registerKupacEnabled;
   }
   onSelectProdavacConditionsAccepted(){
     this.registerProdavacEnabled = !this.registerProdavacEnabled;
   }
-  // registerProdavac() {
-  //   if (!this.registerEnabled) {
-  //     alert('Morate prihvatiti uslove korišćenja kako bi se registrovali.');
-  //   }
-  //   console.log('register prodavac');
-  // }
 
   login(formData: NgForm) {
-    var email = formData.value.useremail;
-    var password = formData.value.userpassword;
-    var lad = new LoginAttemptDto(email, password);
-    console.log(lad)
-    this.apiService.login(lad).subscribe(response => {
-      console.log(response);
-    },
-    error => {
-      console.log('error');
-      console.log(error.message);
-    });
+
+      this.dataLoading = true;
+      this.error = false;
+      var email = formData.value.useremail;
+      var password = formData.value.userpassword;
+      if(!formData.valid) {
+        this.error = true;
+        this.dataLoading = false;
+        this.errorMessage = 'Unesite parametre pristupa.';
+        return;
+      }
+      console.log('Kredencijali: ', email, password);
+      this.authService.executeJwtAuthentication(email, password).subscribe(
+          data => {
+            console.log('Odogovor na login: '+data)
+            this.dataLoading = false;
+            this.router.navigate(['products']);
+          },
+          someError => {
+            this.dataLoading = false;
+            this.error = true;
+            this.errorMessage = 'Pogrešan email ili lozinka.';
+            console.log(this.errorMessage);
+            //formData.reset();
+          });
+
   }
 
   registrujNovogProdavca(formData: NgForm) {
-
+    if(!this.imgProdavacDodat) {
+      this.showFileErrorProdavac = true;
+      return;
+    }
+    this.passwordReenteredErrorP = false;
+    this.dataLoading = true;
     var nazivGazdinstva = formData.value.nazivGazdinstva;
     var imeprodavca = formData.value.imeprodavca;
     var prezimeprodavca = formData.value.prezimeprodavca;
     var emailprodavca = formData.value.emailprodavca;
     var lozinkaprodavca = formData.value.lozinkaprodavca;
+    var ponovljenaLozinka = formData.value.reenteredpasswordprodavca;
+    if(lozinkaprodavca !== ponovljenaLozinka) {
+      this.passwordReenteredErrorP = true;
+      this.dataLoading = false;
+      return;
+    }
     var kontaktprodavca = formData.value.kontaktprodavca;
     var minIznos = +formData.value.minIznos;
     var ulicaprodavca = formData.value.ulicaprodavca;
     var opis = formData.value.opis;
     var dd = formData.value.direktnaDostava;
+    this.name = imeprodavca;
     if (dd !== true) {
       dd = false;
     }
@@ -141,52 +168,109 @@ export class RegisterLoginComponent implements OnInit {
       kd = false;
     }
     var kd = formData.value.kurirskaDostava;
-    console.log('parametri')
-    console.log (imeprodavca, dd, kd);
     var noviProdavac = new RegistracijaProdavcaDto( imeprodavca, prezimeprodavca,
        emailprodavca, lozinkaprodavca, kontaktprodavca, minIznos, ulicaprodavca,
        opis, dd, kd, this.selectedCity, nazivGazdinstva);
-    console.log(noviProdavac);
-    // if (nazivGazdinstva !== '') {
-    //   noviProdavac = new RegistracijaProdavcaDto(imeprodavca, prezimeprodavca, emailprodavca, kontaktprodavca, minIznos,
-    //     ulicaprodavca, opis, dd, kd, this.selectedCity, nazivGazdinstva);
-    //   console.log(noviProdavac);
-    // } else {
-    //   console.log('nema gazd')
-    //   noviProdavac = new RegistracijaProdavcaDto(imeprodavca, prezimeprodavca, emailprodavca, kontaktprodavca, minIznos,
-    //     ulicaprodavca, opis, dd, kd, this.selectedCity);
-    //   console.log(noviProdavac);
-    // }
     this.apiService.registrujProdavca(noviProdavac).subscribe(
       response => {
         console.log('odgovor prihvacen');
+        if (response['status'] === 'USPESNO') {
+
+          var id = response['object'];
+          const uploadImageData = new FormData();
+          uploadImageData.append('imageFile', this.selectedFile, emailprodavca);
+          this.apiService.sacuvajSlikuKorisnika(id, uploadImageData).subscribe(
+            response => {
+              if (response['status'] === 'USPESNO') {
+                this.dataLoading = false;
+                this.registerSuccessful = true;
+                var status = response['status'];
+                var poruka = response['poruka'];
+
+                let dialogRef = this.dialog.open(MyDialogComponent, {data: {status: status, message: poruka}});
+                dialogRef.afterClosed().subscribe(
+                  resp => {
+                    if (status === 'USPESNO') {
+                      // this.router.navigate(['/products']);
+                      formData.reset();
+                    }
+                  }
+                );
+              }
+            }
+          )
+        }
       },
       error => {
         console.log('greska');
+        formData.reset();
       }
     );
 
 
   }
 
-  registrujNovogKupca(formData: NgForm){
+  registrujNovogKupca(formData: NgForm) {
+    this.passwordReenteredErrorK = false;
+    this.dataLoading = true;
     var ime = formData.value.imekupca;
     var prezime = formData.value.prezimekupca;
     var email = formData.value.emailkupca;
     var pass = formData.value.passwordkupca;
-
-    console.log(ime, prezime, email, pass);
-    console.log('registracija kupca');
-    var noviKupac = new RegistracijaKupcaDto(ime, prezime, email, pass);
-    console.log(noviKupac);
+    var repeatedPassword = formData.value.reenteredpasswordkupca;
+    if(pass !== repeatedPassword) {
+      this.passwordReenteredErrorK = true;
+      this.dataLoading = false;
+      return;
+    }
+    var razlog = formData.value.razlog;
+    var noviKupac = new RegistracijaKupcaDto(ime, prezime, email, pass, razlog);
+    this.name = ime;
     this.apiService.registrujKupca(noviKupac).subscribe(
       response => {
         console.log('odgovor prihvacen');
-        console.log(response);
+        if(response['status'] === 'USPESNO') {
+
+          var id = response['object'];
+          const uploadImageData = new FormData();
+          uploadImageData.append('imageFile', this.selectedFile, email);
+          this.apiService.sacuvajSlikuKorisnika(id, uploadImageData).subscribe(
+            response => {
+              this.dataLoading = false;
+              if (response['status'] === 'USPESNO') {
+                this.registerSuccessful = true;
+
+                var status = response['status'];
+                var poruka = response['poruka'];
+
+                let dialogRef = this.dialog.open(MyDialogComponent, {data: {status: status, message: poruka}});
+                dialogRef.afterClosed().subscribe(
+                  resp => {
+                    if (status === 'USPESNO') {
+                      formData.reset();
+                      // this.router.navigate(['/products/details']);
+                    }
+                  }
+                );
+              }
+            }
+          );
+
+        }
       },
       error => {
         console.log('greska');
+        formData.reset();
       }
     );
+  }
+
+  onFileChanged(event){
+    this.selectedFile = event.target.files[0];
+
+    this.imgProdavacDodat= true;
+    if(this.showFileErrorProdavac) {
+      this.showFileErrorProdavac = false;
+    }
   }
 }

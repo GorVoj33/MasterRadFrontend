@@ -1,28 +1,21 @@
 <app-navbar></app-navbar>
 <div class="container">
+
   <div class="row">
     <div class="col-md-5">
       <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
         <div class="carousel-inner">
           <div class="carousel-item active">
-            <img [src]="formImg(product.slika.picByte)"  height='320px' width="320px" class="d-block w-100" alt="...">
+            <img [src]="formImg(product?.slika.picByte)"  height='320px' width="320px" class="d-block w-100" alt="...">
           </div>
         </div>
-        <!-- <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="sr-only">Next</span>
-        </a> -->
       </div>
     </div>
     <div class="col-md-7">
       <p class='kategorija text-center'>{{product?.kategorija?.naziv}}</p>
-      <h2>{{product?.naziv}}</h2>
-      <h5 *ngIf='product.prodavac.gazdinstvo'>{{product?.prodavac.ime}} {{product?.prodavac.prezime}}</h5>
-      <p *ngIf='product.prodavac.gazdinstvo !== ""'>Gazdinstvo: {{product?.prodavac.gazdinstvo}} </p>
+      <h2> {{product?.naziv}}</h2>
+      <h5>Prodavac:<u>{{product?.prodavac?.ime}} {{product?.prodavac?.prezime}}</u></h5>
+      <p *ngIf='product.prodavac.gazdinstvo !== null && product.prodavac.gazdinstvo.length > 0'>Gazdinstvo: {{product?.prodavac?.gazdinstvo}} </p>
       <hr>
       {{product?.opis}}
       <hr>
@@ -39,19 +32,70 @@
       </p>
       <p><b>Poreklo: {{product?.poreklo}}</b></p>
 
-      <p class='kolicina'>
+      <p class='kolicina' *ngIf='userLoggedIn'>
         <label class='normal-text'>Kolicina:</label>
         <mat-icon class='icon' (click)='smanjiKolicinu()'>remove</mat-icon>
         <b>{{kolicina}}</b>
         <mat-icon class='icon' (click)='povecajKolicinu()'>add</mat-icon>
 
-        <button type="button" id='add-btn' class="btn btn-default cart" (click)='dodajUKorpu()'>{{btnText}}</button>
-
-
-
+        <button type="button" id='add-btn' class="btn btn-default cart" [disabled]='btnAddDisabled' (click)='addToCart()'>{{btnText}}</button>
+      </p>
+      <div class="alert alert-secondary" role="alert" *ngIf='!userLoggedIn'>
+        Potrebno je da se registrujete kako biste mogli da dodajete artikle u korpu.
+      </div>
+      <button type="button" class="btn btn-danger" *ngIf='prodavacVlasnikLoggedIn' (click)='changeActivationStatus()'>{{btnAktiviranjeText}}</button>
+      <button type="button" class="btn btn-danger" *ngIf='prodavacVlasnikLoggedIn' routerLink="['products/update/{{product.id}}']">IZMENI</button>
+      <button type="button" class="btn btn-danger" *ngIf='auth.getRoleOfAuthenticatedUser()==="[admin]"' (click)='setPromoted()' [disabled]='product.istaknut'>{{btnIstaknutText}}</button>
     </div>
   </div>
-  <div class='row'>
-    <app-comments></app-comments>
-  </div>
-</div>
+
+    <div class="row bootstrap snippets">
+      <div class="col-md-6 col-md-offset-2 col-sm-12">
+          <div class="comment-wrapper">
+              <div class="panel panel-info">
+                  <div class="panel-heading" (click)='ucitajKomentare()'>
+                      <u>Komentari ({{product?.brojKomentara}})</u>
+                  </div>
+                  <div class="panel-body" *ngIf='comments !== null'>
+
+
+                      <div class="clearfix"></div>
+                      <hr>
+                      <ul class="media-list">
+                        <li class="media" *ngFor='let komentar of comments'>
+                          <app-comments [comment]='komentar'></app-comments>
+                        </li>
+                      </ul>
+                      <div class="clearfix"></div>
+                      <hr>
+                      <form #formData="ngForm" (ngSubmit)="sacuvajKomentar(formData)" *ngIf='auth.getAuthenticatedUser()'>
+                      <textarea ngModel name='komentar' class="form-control" placeholder="unesite komentar..." rows="3"></textarea>
+                      <br>
+                      <button type="submit" class="btn btn-info pull-right">Pošalji</button>
+                    </form>
+                  </div>
+              </div>
+          </div>
+
+      </div>
+    </div>
+    <h3>Slični artikli</h3>
+    <div class="row">
+
+        <div class=" col-md-3 col-sm-4 col-xs-6 product-grid" *ngFor='let p of product?.slicniArtikli'>
+            <div class="product-image" >
+                    <img [src]="formImg(p.slika.picByte)" height='300' width='300'>
+                    <!-- <img [src]="formImg(p.slika.picByte)"> -->
+                <span class="product-trend-label">{{p.kategorija.naziv}}</span>
+                <ul class="social">
+                    <li><button type="button" class="button-dodaj"> Prikaži</button> </li>
+                </ul>
+            </div>
+          <div class="product-content">
+              <h3 class="title"><a href="#">{{p.naziv}}</a></h3>
+              <div class="price">Cena: {{p.cena}} din / {{p.kolicina}}</div>
+          </div>
+      </div>
+
+    </div>
+

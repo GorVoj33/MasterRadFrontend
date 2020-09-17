@@ -1,0 +1,103 @@
+::placeholder {
+  font-weight: 800;
+}
+.mat-stepper-vertical {
+  margin-top: 8px;
+}
+
+.mat-form-field {
+  margin-top: 16px;
+}
+.main {
+  padding-left: 50px;
+}
+
+.controls-container{
+
+  width: 60%;
+  display:block;
+
+}
+.control {
+  width:100%;
+  display:inline-block;
+
+}
+.label {
+  width:30%;
+  padding-top: 36px;
+  float:left;
+  vertical-align: middle;
+
+}
+.label-age {
+  width:20%;
+  padding-top: 20px;
+  float:left;
+  vertical-align: middle;
+}
+.input-field {
+    width:40%;
+    /* float:right; */
+}
+mat-button-toggle {
+  width: 100%;
+}
+.input-field-slider {
+  width: 70%;
+  /* float: right; */
+}
+.age {
+  padding-top: 30px;
+}
+@media only screen and (max-width: 768px) {
+
+  .main {
+    padding-left: 10px;
+  }
+
+  /* For mobile phones: */
+  .controls-container{
+    width: 100%;
+    display:block;
+
+  }
+  .control {
+    width:100%;
+    display:inline-block;
+
+  }
+  .label {
+    width:30%;
+    float:left;
+  }
+  .input-field {
+      width:70%;
+      /* float:right; */
+  }
+  .input-field-slider {
+    width: 70%;
+    /* float: right; */
+  }
+}
+
+h3 {
+  margin-bottom: 0px;
+
+}
+hr {
+  margin-top: 0px;
+}
+.btn {
+  margin:auto;
+  display:block;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  background: #21e4aa;
+  color: white;
+  font-size: 22px;
+}
+.error {
+  color: red;
+}
+

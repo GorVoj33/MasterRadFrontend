@@ -1,5 +1,14 @@
 <app-navbar></app-navbar>
 <div class="container">
+  <div class='row' *ngIf='dataLoading' >
+    <mat-spinner mode="indeterminate" style="left: 35%; top: 20%;"></mat-spinner>
+  </div>
+  <div class="alert alert-success" role="alert" *ngIf='registerSuccessful'>
+    <h4 class="alert-heading">Uspesno ste se poslali zahtev za registraciju, sacekajte na potvrdu od nasih administratora!</h4>
+    <p>Postovani {{ name }}, uspesno ste podneli prijavu registraciju, potrebno je da sacekate da neko od nasih administratora odobri vas zahtev kako bi mogli da se prijavite na sistem.</p>
+    <hr>
+    <p class="mb-0">Hvala na poverenju, ostanite aktivni.</p>
+  </div>
   <div class='row'>
     <div class="col-md-4">
       <button type="button" id='btn1' class="toggle-btn active" (click)='prikaziStranuZaPrijavu()'>Prijava na sistem</button>
@@ -12,24 +21,43 @@
     </div>
   </div>
 
-
+  <div class="row alert alert-danger" role="alert" *ngIf='error'>
+    {{errorMessage}}
+  </div>
 <div class="row">
+
 <form id='f1' #formDataLogin="ngForm" (ngSubmit)="login(formDataLogin)" class='input-group'>
 
-    <input type='text' class='input-field' placeholder="Vaš e-mail" name='useremail' #useremail="ngModel" ngModel required email>
-    <input type='password' class='input-field' placeholder="Lozinka" name='userpassword' #userpassword="ngModel" ngModel required minlength="5"
-    maxlength="30">
+
+    <input type='text' class='input-field' placeholder="Vaš e-mail" name='useremail' #useremail="ngModel" ngModel required>
+    <input type='password' class='input-field' placeholder="Lozinka" name='userpassword' #userpassword="ngModel" ngModel required>
     <button type="submit" class="submit-btn">Prijavi me</button>
 </form>
 
 <form id='f2' style="display: none;" #formDataRegisterKupac="ngForm" (ngSubmit)="registrujNovogKupca(formDataRegisterKupac)">
-      <input type='text' class='input-field' placeholder="Ime" ngModel name='imekupca'>
-      <input type='text' class='input-field' placeholder="Prezime" ngModel name='prezimekupca'>
+      <input type='text' class='input-field' placeholder="Ime" ngModel name='imekupca' required>
+      <input type='text' class='input-field' placeholder="Prezime" ngModel name='prezimekupca' required>
       <input type='text' class='input-field' placeholder="Email" email ngModel name='emailkupca'>
-      <input type='password' class='input-field' placeholder="Lozinka" ngModel name='passwordkupca'>
-
-      <input type='' class='input-field' placeholder="Email" email ngModel name='emailkupca'>
-
+      <input type='password' class='input-field' placeholder="Lozinka" #passwordkupca='ngModel' ngModel name='passwordkupca' maxlength='30' minlength='5' required>
+      <span *ngIf="passwordkupca.invalid && (passwordkupca.dirty || passwordkupca.touched)">
+        <mat-error *ngIf="passwordkupca.errors['required']">Lozinka je obavezna.</mat-error>
+        <mat-error *ngIf="passwordkupca.errors['minlength']">Lozinka mora sadržati makar 5 karaktera.</mat-error>
+        <mat-error *ngIf="passwordkupca.errors['maxlength']">Lozinka mora sadržati najviše 30 karaktera.</mat-error>
+      </span>
+      <input type='password' class='input-field' placeholder="Ponovite lozinku" #reenteredpasswordkupca='ngModel' ngModel name='reenteredpasswordkupca'>
+      <mat-error *ngIf="passwordReenteredErrorK">Morate uneti istu lozinku</mat-error>
+      <input type='' class='input-field' placeholder="Kako ste culi za ovu platformu?" ngModel name='razlog' required>
+      <div class="row left">
+        <!-- <label for="inputNaziv">Odaberite sliku profila</label>
+        <input class='green' type="file" (change)="onFileChanged($event)"> -->
+        <label for="file-upload" class="custom-file-upload">
+          <i class="fa fa-cloud-upload" aria-hidden="true"></i> Izaberite sliku
+      </label>
+      <svg style='margin-left:5px; color: green;' width="3em" height="3em" viewBox="0 0 16 16" class="bi bi-patch-check-fll" fill="currentColor" xmlns="http://www.w3.org/2000/svg" *ngIf = 'imgProdavacDodat'>
+        <path fill-rule="evenodd" d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01-.622-.636zm.287 5.984a.5.5 0 0 0-.708-.708L7 8.793 5.854 7.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+      </svg>
+      <input id="file-upload" type="file" (change)="onFileChanged($event)"/>
+      </div>
       <div>
         <input type="checkbox" class="check-box" (click)='onSelectKupacConditionsAccepted()'><span>Slazem se sa uslovima koriscenja.</span>
       </div>
@@ -42,23 +70,39 @@
 
 
 <form id='f3' style="display: none;" #formDataRegisterProdavac="ngForm" (ngSubmit)="registrujNovogProdavca(formDataRegisterProdavac)">
-  <input type="checkbox" (click)='onSelectGazdinstvo()'><span style="color: red;"><u>Posedujem registrovano gazdinstvo</u></span>
-  <input type='text' id="naziv-gazdinstva-id" class='input-field' placeholder='Naziv gazdinstva' style="display: none;"
-    name='nazivGazdinstva' #nazivGazdinstva="ngModel" ngModel>
+
   <input type='text' class='input-field' placeholder="Ime*" name='imeprodavca' #imeprodavca="ngModel" ngModel required>
   <input type='text' class='input-field' placeholder="Prezime*" name='prezimeprodavca' #prezimeprodavca="ngModel" ngModel required>
   <input type='text' class='input-field' placeholder="Email*" name='emailprodavca' #emailprodavca="ngModel" ngModel required email>
-  <input type='password' class='input-field' placeholder="Lozinka*" name='lozinkaprodavca' #lozinkaprodavca="ngModel" ngModel required>
+  <span *ngIf="emailprodavca.invalid && (emailprodavca.dirty || emailprodavca.touched)">
+    <mat-error *ngIf="emailprodavca.errors['email']"> Morate uneti pravilan email.</mat-error>
+
+  </span>
+
+  <input type='password' class='input-field' placeholder="Lozinka*" name='lozinkaprodavca'
+   #lozinkaprodavca="ngModel" ngModel required minlength='5' maxlength='30'>
   <span *ngIf="lozinkaprodavca.invalid && (lozinkaprodavca.dirty || lozinkaprodavca.touched)">
     <mat-error *ngIf="lozinkaprodavca.errors['required']">Lozinka je obavezna.</mat-error>
     <mat-error *ngIf="lozinkaprodavca.errors['minlength']">Lozinka mora sadržati makar 5 karaktera.</mat-error>
     <mat-error *ngIf="lozinkaprodavca.errors['maxlength']">Lozinka mora sadržati najviše 30 karaktera.</mat-error>
   </span>
+  <input type='password' class='input-field' placeholder="Ponovite lozinku" #reenteredpasswordprodavca='ngModel' ngModel name='reenteredpasswordprodavca'>
+  <mat-error *ngIf="passwordReenteredErrorP">Morate uneti istu lozinku</mat-error>
   <input type='text' class='input-field' placeholder="Kontakt telefon*" name='kontaktprodavca' #kontaktprodavca="ngModel" ngModel required>
   <input type='number' class='input-field' placeholder="Minimalan iznos narudžbine*" name='minIznos' #minIznos="ngModel" ngModel required>
-  <label>Dostava proizvoda:</label>
+
+  <div class='row left'>
+    <input type="checkbox" (click)='onSelectGazdinstvo()'><span style="color: red;"><u>Posedujem registrovano gazdinstvo</u></span>
+    <input type='text' id="naziv-gazdinstva-id" class='input-field' placeholder='Naziv gazdinstva' style="display: none;"
+      name='nazivGazdinstva' #nazivGazdinstva="ngModel" ngModel>
+  </div>
+
+  <div class='row left'>
+    <label>Dostava:</label>
+  </div>
   <div class="form-check">
-    <input class="form-check-input" name='direktnaDostava' ngModel type="checkbox" value="" id="direktnaDostava">
+
+    <input class="form-check-input"  name='direktnaDostava' ngModel type="checkbox" value="" id="direktnaDostava">
     <label class="form-check-label" for="defaultCheck1">
       Direktno isporučujem robu na dogovorenu adresu.
     </label>
@@ -75,7 +119,7 @@
   <mat-form-field class='input-grad' *ngIf='gradovi.length > 0'>
     <mat-label>Izaberite grad odakle ste vi ili vasi proizvodi</mat-label>
     <mat-select>
-      <!-- <mat-select (click)='onSelect()'> -->
+
       <mat-option *ngFor="let g of gradovi" (onSelectionChange)='onSelectionChangeProdavacForm(g)'>
         {{g?.naziv}}
       </mat-option>
@@ -86,6 +130,22 @@
     <label for="exampleFormControlTextarea1">Ukoliko želite da napišete nešto više o vama i vašim proizvodima možete to ovde učiniti.</label>
     <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name='opis' #opis="ngModel" ngModel></textarea>
   </div>
+  <div class="row form-group col-md-6">
+    <label for="file-upload" class="custom-file-upload">
+      <i class="fa fa-cloud-upload" aria-hidden="true"></i> Izaberite sliku
+    </label>
+    <input id="file-upload" type="file" (change)="onFileChanged($event)"/>
+    <svg style='margin-left:5px; color: green;' width="3em" height="3em" viewBox="0 0 16 16" class="bi bi-patch-check-fll" fill="currentColor" xmlns="http://www.w3.org/2000/svg" *ngIf = 'imgProdavacDodat'>
+      <path fill-rule="evenodd" d="M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01-.622-.636zm.287 5.984a.5.5 0 0 0-.708-.708L7 8.793 5.854 7.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+    </svg>
+    <span *ngIf="showFileErrorProdavac">
+      <mat-error>Morate izabrati sliku profila.</mat-error>
+    </span>
+    <!-- <label for="inputNaziv">Odaberite sliku profila</label>
+    <input type="file" (change)="onFileChanged($event)"> -->
+
+  </div>
+
   <div>
     <input type="checkbox" class="check-box" (click)='onSelectProdavacConditionsAccepted()'><span class='conditions'>Slažem se sa uslovima korišćenja.</span>
   </div>
@@ -97,70 +157,3 @@
 </div>
 
 
-<!-- <div class="hero">
-  <div id='form-box' class='form-box'>
-    <div class = 'button-box'>
-      <div id='btn'></div>
-      <button type="button" class="toggle-btn" (click)='prijava()'>Prijava</button>
-      <button type="button" class="toggle-btn" (click)='registrujKupca()'>Registracija kupca</button>
-      <button type="button" class="toggle-btn" (click)='registrujProdavca()'>Registracija prodavca</button>
-
-    </div>
-    <form id='login' class='input-group'>
-      <input type='text' class='input-field' placeholder="Vaš e-mail">
-      <input type='text' class='input-field' placeholder="Lozinka">
-
-      <button type="submit" class="submit-btn">Prijavi me</button>
-    </form>
-    <form id='registracijaKupca' class='input-group'>
-      <input type='text' class='input-field' placeholder="Ime">
-      <input type='text' class='input-field' placeholder="Prezime">
-      <input type='text' class='input-field' placeholder="Email" email>
-      <input type='text' class='input-field' placeholder="Lozinka">
-      <input type='text' class='input-field' placeholder="Kontakt telefon">
-      <input type='text' class='input-field' placeholder="Ulica">
-      <mat-form-field class='input-grad' >
-        <mat-label>Grad</mat-label>
-        <mat-select (click)='onSelect()'>
-          <mat-option *ngFor="let g of gradovi" [value]="g.id" (click)='onSelect(g)'>
-            {{g.naziv}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <input type='text' id='ptt-id' class='ptt-field' value="PTT broj izabranog grada: 11000" style="display: none;" disabled>
-
-
-      <div>
-        <input type="checkbox" class="check-box"><span>Slazem se sa uslovima koriscenja.</span>
-      </div>
-      <button type="submit" class="submit-btn">Registruj me kao kupca</button>
-    </form>
-    <form id='registracijaProdavca' class='input-group'>
-      <input type="checkbox" (click)='onSelectGazdinstvo()'><span style="color: red;"><u>Posedujem registrovano gazdinstvo</u></span>
-      <input type='text' id="naziv-gazdinstva-id" class='input-field' placeholder='Naziv gazdinstva' style="display: none;">
-      <input type='text' class='input-field' placeholder="Ime">
-      <input type='text' class='input-field' placeholder="Prezime">
-      <input type='text' class='input-field' placeholder="Email">
-      <input type='text' class='input-field' placeholder="Lozinka">
-
-      <input type='text' class='input-field' placeholder="Kontakt telefon">
-      <input type='text' class='input-field' placeholder="Ulica">
-      <mat-form-field class='input-grad' >
-        <mat-label>Grad</mat-label>
-        <mat-select (click)='onSelect()'>
-          <mat-option *ngFor="let g of gradovi" [value]="g.id" (click)='onSelect(g)'>
-            {{g.naziv}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <input type='text' id='ptt-id' class='ptt-field' value="PTT broj izabranog grada: 11000" style="display: none;" disabled>
-      <div>
-        <input type="checkbox" class="check-box"><span class='conditions'>Slazem se sa uslovima koriscenja.</span>
-      </div>
-      <button type="submit" class="submit-btn">Registruj me kao prodavca</button>
-    </form>
-
-
-  </div>
-
-</div> -->

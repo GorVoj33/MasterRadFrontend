@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { StavkeKorpePremaProdavcu } from 'src/app/dtos/StavkeKorpePremaProdavcu.model';
 import { ApiServiceService } from 'src/app/services/api-service.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { KorpaDto } from 'src/app/dtos/korpaDto.model';
 import { Router } from '@angular/router';
+import { PromenaKolicineDto } from 'src/app/dtos/promenaKolicine.model';
+import { MatDialog } from '@angular/material';
+import { MyDialogComponent } from 'src/app/my-dialog/my-dialog.component';
 @Component({
   selector: 'app-cart-details',
   templateUrl: './cart-details.component.html',
@@ -25,22 +28,31 @@ export class CartDetailsComponent implements OnInit {
   selektovaniProdavci: {id: number}[] = [];
   ukupnoArtikala = 0;
   constructor(private api: ApiServiceService,
-    private auth: AuthService,
-    private router: Router) { }
+    public auth: AuthService,
+    private router: Router,
+    private dialog: MatDialog) { }
 
   ngOnInit() {
-    this.dataLoading = true;
-    this.idKorpeUlogovanog = this.auth.vratiIdKorpeUlogovanog();
-    this.api.ucitajKorpu(this.idKorpeUlogovanog).subscribe(
-      response =>
-      {
-        setTimeout(() => this.dataLoading = false, 1000);
-        console.log(response['object'])
-        this.korpa = response['object'];
-        console.log(this.korpa);
 
-      }
-    );
+
+    this.idKorpeUlogovanog = this.auth.getAuthenticatedUserId();
+
+    console.log('Ulogovan id:'+this.idKorpeUlogovanog)
+    if(this.idKorpeUlogovanog) {
+      this.dataLoading = true;
+      this.api.ucitajKorpu(this.idKorpeUlogovanog).subscribe(
+        response =>
+        {
+          setTimeout(() => this.dataLoading = false, 1000);
+          console.log(response['object'])
+          this.korpa = response['object'];
+          this.auth.updateItemsNumber(this.korpa.brojStavki);
+          console.log(this.korpa);
+
+        }
+      );
+    }
+
   }
   formImg(picByte) {
     return 'data:image/jpeg;base64,' + picByte;
@@ -55,14 +67,17 @@ export class CartDetailsComponent implements OnInit {
   deleteItem(p, a, stavkaId) {
     console.log('brisanje stavke');
     console.log(stavkaId);
-    var korpaId = this.auth.vratiIdKorpeUlogovanog();
+    var korpaId = this.auth.getAuthenticatedUserId();
     this.api.obrisiStavkuKopre(korpaId, stavkaId). subscribe(
       response => {
         this.korpa = response['object'];
+        this.auth.updateItemsNumber(this.auth.getItemsNumber()-1);
         // this.ukupnaVrednostArtikala = this.korpa.ukupnaVrednost;
         if (this.selektovaniProdavci.includes(p.prodavac.id)) {
           this.ukupnoArtikala -= 1;
-          this.ukupnaVrednostArtikala -= a.cena;
+          console.log('Hocemo da obrisemo artikal sa cenom '+a.cena + ' a ceo artikal je objekat')
+          console.log(a)
+          this.ukupnaVrednostArtikala -= a.vrednost;
         }
       }
     );
@@ -85,7 +100,6 @@ export class CartDetailsComponent implements OnInit {
 
     if(exist) {
       this.troskoviDostave += 300;
-
     }else {
       this.ukupnoArtikala += p.artikli.length;
       this.selektovaniProdavci.push(p.prodavac.id);
@@ -136,9 +150,44 @@ export class CartDetailsComponent implements OnInit {
         }
       }
     }else {
-      console.log('jesu')
-      this.auth.setKorpa(this.korpa);
+
+      this.auth.setCart(this.korpa);
       this.router.navigate(['/order']);
     }
+  }
+
+  addItems(artikal: any) {
+    artikal.kolicina += 1;
+  }
+  removeItems(artikal: any) {
+    if(artikal.kolicina === 1) return;
+    artikal.kolicina -= 1;
+  }
+
+
+  promeniKolicinu (a, staraKolicina:number, novaKolicina:number, kol: HTMLInputElement) {
+    console.log(a.stavkaId, a.artikal.id, staraKolicina, novaKolicina);
+    var promenaKolicineObjekat = new PromenaKolicineDto(a.stavkaId, a.artikal.id, staraKolicina, novaKolicina);
+    if(staraKolicina !== novaKolicina && novaKolicina > 0) {
+      this.api.promeniKolicinu(promenaKolicineObjekat).subscribe(response => {
+        console.log(response);
+
+        var status = response.status;
+        var poruka = response.poruka;
+        if(status === 'USPESNO'){
+          console.log('usao u if naredbu')
+          this.korpa = response.object;
+          console.log('nova korpa setovana')
+        }
+
+        else kol.value = staraKolicina+'';
+        let dialogRef = this.dialog.open(MyDialogComponent, {data: {status: status, message: poruka}});
+        dialogRef.afterClosed().subscribe(
+          resp => {}
+        );
+      })
+    }
+
+    // this.api.updateKolicinu()
   }
 }

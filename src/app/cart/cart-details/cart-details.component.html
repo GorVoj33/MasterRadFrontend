@@ -1,7 +1,13 @@
 <app-navbar></app-navbar>
 <div class="container">
+  <!-- <div class="alert alert-danger" role="alert" *ngIf='this.idKorpeUlogovanog === 0'>
+    Morate se ulogovati da biste imali pristup vašoj korpi.
+  </div> -->
   <div class='row' *ngIf='dataLoading' >
     <mat-spinner mode="indeterminate" style="left: 35%; top: 20%;"></mat-spinner>
+  </div>
+  <div class="alert alert-light" role="alert" *ngIf='!auth.getAuthenticatedUser()'>
+    Molimo vas da se ulogujete kako bi mogli da dodajete artikle u korpu.
   </div>
   <!-- Vasa korpa -> {{korpa?.brojStavki}} stavki -->
   <div class='row' *ngIf='!dataLoading'>
@@ -9,7 +15,8 @@
       Podaci o korpi
 
     </div> -->
-    <div class='col-md-8 products'>
+
+    <div class='col-md-8 products' *ngIf='auth.getAuthenticatedUser()'>
       <div class="products-by-prodavac" id='prodavac-{{p.prodavac.id}}' *ngFor='let p of korpa?.stavke' scope="col">
         <div class='row'>
           <div class="col-md-1">
@@ -63,13 +70,17 @@
           </div>
           <div class='col-md-2' style="font-size: 22px;">
 
-            <span class="material-icons">
-            add
+            <input type='number' class='kolicina-input' value='{{a.kolicina}}' #kol>
+            <button class='done-icon' (click)='promeniKolicinu (a, a.kolicina, kol.value, kol)'><span class="material-icons done-icon">done_outline</span></button>
+
+            <!-- <span class="material-icons" (click)='addItems(a)'>
+              add
             </span>
-            {{a.kolicina}} kom.
-            <span class="material-icons">
+            {{a.kolicina}} kom
+            <span class="material-icons" (click)='removeItems(a)'>
               remove
-            </span>
+            </span> -->
+            <!-- <button mat-raised-button>Sacuvaj</button> -->
             </div>
             <div class='col-md-2'>
               {{a.vrednost}} din.
@@ -116,17 +127,15 @@
           Potencionalna vrednost korpe: {{korpa?.ukupnaVrednost}} din.
         </div>
         <div class="elementary-cost">
-          Broj artikala: {{ukupnoArtikala}}
+          Broj narudžbina: {{ukupnoArtikala}}
         </div>
-        <!-- <div class="elementary-cost">
-          Troskovi dostave:
-        </div> -->
+
         <hr>
         <div class="total-cost">
-          Ukupno: {{ukupnaVrednostArtikala}}
+          Ukupno: {{ukupnaVrednostArtikala}} din.
         </div>
         <div>
-          <button class="btn-order btn btn-default cart" (click)='order()'type="button">Naruci ({{ukupnoArtikala}})</button>
+          <button class="btn-order btn btn-default cart" (click)='order()'type="button" *ngIf='ukupnaVrednostArtikala>0'>Naruci ({{ukupnoArtikala}})</button>
         </div>
 
       </div>

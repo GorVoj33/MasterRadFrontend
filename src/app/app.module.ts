@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -18,20 +18,20 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TooltipModule } from 'ngx-bootstrap/tooltip';
 
 
-import { AngularFontAwesomeModule } from 'angular-font-awesome';
+// import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { CreateProductComponent } from './products/create-product/create-product.component';
 import { CartDetailsComponent } from './cart/cart-details/cart-details.component';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ProfileComponent } from './profile/profile.component';
 import { MatIconModule, MatDialog } from '@angular/material';
 import { AdminPanelComponent } from './admin-panel/admin-panel.component';
 import { MyDialogComponent } from './my-dialog/my-dialog.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
-import { SidebarComponent } from './admin-panel/sidebar/sidebar.component';
-import { CategoryComponent } from './products/category/category.component';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatExpansionModule} from '@angular/material/expansion';
 import {MatSelectModule} from '@angular/material/select';
 import { OrderComponent } from './order/order.component';
 import { ApiServiceService } from './services/api-service.service';
@@ -40,6 +40,13 @@ import { ProfileListComponent } from './profile/profile-list/profile-list.compon
 import { OrderManageComponent } from './order/order-manage/order-manage.component';
 import { DashboardComponent } from './admin-panel/dashboard/dashboard.component';
 import { CommentsComponent } from './products/product-detail/comments/comments.component';
+import { ErrorPageComponent } from './shared/error-page/error-page.component';
+import { HttpInterceptorService } from './services/http-interceptor.service';
+import { CreateCategoryComponent } from './admin-panel/create-category/create-category.component';
+import { NgxSliderModule } from '@m0t0r/ngx-slider';
+import { UpdateProductComponent } from './products/update-product/update-product.component';
+import { CategoryListComponent } from './shared/menubar/category-list/category-list.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -55,13 +62,15 @@ import { CommentsComponent } from './products/product-detail/comments/comments.c
     ProfileComponent,
     AdminPanelComponent,
     MyDialogComponent,
-    SidebarComponent,
-    CategoryComponent,
+    CreateCategoryComponent,
     OrderComponent,
     ProfileListComponent,
     OrderManageComponent,
-    DashboardComponent,
-    CommentsComponent
+    CommentsComponent,
+    ErrorPageComponent,
+    UpdateProductComponent,
+    CategoryListComponent
+
   ],
   imports: [
     BrowserModule,
@@ -75,10 +84,14 @@ import { CommentsComponent } from './products/product-detail/comments/comments.c
     BrowserAnimationsModule,
     MatProgressSpinnerModule,
     CustommaterialModule,
-    AngularFontAwesomeModule,
     HttpClientModule,
     MatDialogModule,
-    MatSelectModule
+    MatSelectModule,
+    NgxSliderModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatExpansionModule
+
   ],
   exports: [
     MyDialogComponent
@@ -86,7 +99,8 @@ import { CommentsComponent } from './products/product-detail/comments/comments.c
   entryComponents: [
     MyDialogComponent
   ],
-  providers: [ApiServiceService, AuthService],
+  providers: [ApiServiceService, AuthService,
+    {provide: HTTP_INTERCEPTORS, useClass : HttpInterceptorService, multi: true}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

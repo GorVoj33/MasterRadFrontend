@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
+import { MatTableDataSource, MatDialog } from '@angular/material';
 import { ApiServiceService } from 'src/app/services/api-service.service';
+import { AuthService } from 'src/app/services/auth.service';
+import { MyDialogComponent } from 'src/app/my-dialog/my-dialog.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -29,7 +31,9 @@ export class DashboardComponent implements OnInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSourceProdavci.filter = filterValue.trim().toLowerCase();
   }
-  constructor(private api: ApiServiceService) { }
+  constructor(private api: ApiServiceService,
+              private auth: AuthService,
+              private dialog: MatDialog) { }
 
   ngOnInit() {
     if(this.prihvaceniProdavci.length === 0) {
@@ -60,7 +64,15 @@ export class DashboardComponent implements OnInit {
   odobri(idKorisnika) {
     this.api.posaljiZahtevZaOdobravanjeKorisnika(idKorisnika).subscribe(
       response => {
-        console.log(response);
+        if(response['status'] === 'USPESNO') {
+          let dialogRef = this.dialog.open(MyDialogComponent, {data: {status: response['status'], message: 'Korisnik je uspesno odobren.'}});
+            dialogRef.afterClosed().subscribe(
+              resp => {
+                this.ucitajKupceNaCekanju();
+                this.ucitajProdavceNaCekanju();
+              }
+            );
+        }
       }
     )
   }
@@ -197,5 +209,8 @@ export class DashboardComponent implements OnInit {
     var newCategory = document.getElementById('new-category');
     newCategory.style.display = 'block';
     this.nazivSadrzaja = 'Unos nove kategorije';
+  }
+  async logout () {
+    await this.auth.logout();
   }
 }
